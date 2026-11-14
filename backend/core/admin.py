@@ -3,8 +3,8 @@ from .models import Astronaut, VitalReading, MedicalAlert, HistoricalRollup30D
 
 @admin.register(Astronaut)
 class AstronautAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'name_ar', 'role', 'age', 'sex', 'mission_location', 'current_activity', 'hr_mean', 'sys_bp_mean', 'spo2_mean')
-    list_filter = ('mission_location', 'current_activity', 'sex')
+    list_display = ('id', 'name', 'name_ar', 'role', 'age', 'gender', 'mission_location', 'current_activity', 'hr_mean', 'sys_bp_mean', 'spo2_mean')
+    list_filter = ('mission_location', 'current_activity', 'gender')
     search_fields = ('id', 'name', 'name_ar', 'role')
 
 @admin.register(VitalReading)
@@ -17,8 +17,8 @@ class VitalReadingAdmin(admin.ModelAdmin):
 
 @admin.register(MedicalAlert)
 class MedicalAlertAdmin(admin.ModelAdmin):
-    list_display = ('id', 'astronaut', 'timestamp', 'level', 'protocol_code', 'primary_metric', 'is_active', 'resolved')
-    list_filter = ('level', 'is_active', 'resolved', 'protocol_code', 'astronaut')
+    list_display = ('id', 'astronaut', 'timestamp', 'level', 'protocol_code', 'primary_metric', 'is_active', 'surgeon_contacted')
+    list_filter = ('level', 'is_active', 'surgeon_contacted', 'protocol_code', 'astronaut')
     search_fields = ('title_en', 'title_ar', 'protocol_code', 'protocol_title_en', 'astronaut__name')
     date_hierarchy = 'timestamp'
     ordering = ('-timestamp',)

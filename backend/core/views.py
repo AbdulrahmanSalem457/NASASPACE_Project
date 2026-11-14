@@ -475,12 +475,6 @@ class ActivateScenarioView(APIView):
             hrv_rmssd=45.0,
             radiation_rate=0.55
         )
-            activity=ast.current_activity,
-            status='critical',
-            cabin_co2=3.2,
-            hrv_rmssd=45.0,
-            radiation_rate=0.55
-        )
 
         chk = copy.deepcopy(STANDARD_CHECKLIST_TEMPLATE)
         chk[0]["completed"] = True

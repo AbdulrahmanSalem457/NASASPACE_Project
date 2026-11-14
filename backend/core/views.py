@@ -5,7 +5,7 @@ from django.db.models import Avg, Min, Max, Count
 from rest_framework import status, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 
 from .models import Astronaut, VitalReading, MedicalAlert, HistoricalRollup30D
 from .serializers import (
@@ -367,7 +367,7 @@ class ActivateScenarioView(APIView):
     4: Cabin CO2 Spike (>5.3 mmHg + Headache & Drowsiness)
     5: Solar Particle Event (SPE) / EVA Cardiac Emergency
     """
-    @extend_schema(request=ScenarioActivateSerializer, responses={200: serializers.DictField()})
+    @extend_schema(request=ScenarioActivateSerializer, responses={200: OpenApiTypes.OBJECT})
     def post(self, request, scenario_id):
         scenarios_map = {
             "0": self.activate_scenario_0,
@@ -855,7 +855,7 @@ class AIAdvisorView(APIView):
     space physiology mechanisms (Fluid Shift, Plasma Loss, Space Fever, SANS),
     and returns comprehensive bilingual clinical guidance.
     """
-    @extend_schema(request=AIAdvisorRequestSerializer, responses={200: serializers.DictField()})
+    @extend_schema(request=AIAdvisorRequestSerializer, responses={200: OpenApiTypes.OBJECT})
     @extend_schema(responses={200: UploadCSVResponseSerializer})
     def post(self, request):
         serializer = AIAdvisorRequestSerializer(data=request.data)

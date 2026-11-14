@@ -1,0 +1,1 @@
+# AstroVitals Django Project

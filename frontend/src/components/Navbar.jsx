@@ -113,7 +113,12 @@ export const Navbar = ({
             <span className="text-cyan-300 font-bold">{selectedAstronaut?.id} — {lang === 'ar' ? selectedAstronaut?.name_ar : selectedAstronaut?.name}</span>
             <span className="text-slate-600">|</span>
             <span className="text-slate-400">{lang === 'ar' ? 'البيئة:' : 'Loc:'}</span>
-            <span className="text-indigo-300 font-semibold">{location}</span>
+            <span className="text-indigo-300 font-semibold">
+              {lang === 'ar' 
+                ? (location === 'ISS' ? 'محطة الفضاء الدولية' : location === 'Moon' ? 'مدار القمر' : 'المريخ')
+                : location
+              }
+            </span>
           </div>
 
           {/* Right / End: Utilities & Modals */}
@@ -124,7 +129,7 @@ export const Navbar = ({
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-mono font-bold transition-all shadow-md shadow-blue-500/20 cursor-pointer"
             >
               <Brain className="w-3.5 h-3.5 text-cyan-300" />
-              <span className="hidden sm:inline">{lang === 'ar' ? 'المستشار السريري AI' : 'AI Advisor'}</span>
+              <span className="hidden sm:inline">{lang === 'ar' ? 'المستشار الطبي الذكي' : 'AI Advisor'}</span>
             </button>
 
             {/* Crew Matrix Button */}

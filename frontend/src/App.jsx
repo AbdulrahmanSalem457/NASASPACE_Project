@@ -12,7 +12,6 @@ import { HealthReportsTab } from './components/HealthReportsTab';
 import { AlertModal } from './components/AlertModal';
 import { AIAdvisorModal } from './components/AIAdvisorModal';
 import { CrewMatrixModal } from './components/CrewMatrixModal';
-import { ExternalLink } from 'lucide-react';
 
 export const App = () => {
   const { lang, t, isLoading, error } = useAstro();
@@ -109,21 +108,19 @@ export const App = () => {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-            <span>AstroVitals AI Telemetry Engine — NASA Space Apps Challenge 2026</span>
+            <span>
+              {lang === 'ar'
+                ? 'محرك القياسات الحيوية الفضائية AstroVitals AI — تحدي تطبيقات الفضاء من ناسا 2026'
+                : 'AstroVitals AI Telemetry Engine — NASA Space Apps Challenge 2026'}
+            </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 text-slate-300">
-            <a 
-              href="http://localhost:8000/swagger/" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="hover:text-cyan-400 flex items-center gap-1 underline underline-offset-4"
-            >
-              <span>Classic Swagger UI API</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
-            <span className="text-slate-600">|</span>
-            <span className="text-slate-400">Decoupled Django REST + React Architecture</span>
+          <div className="flex flex-wrap items-center gap-4 text-slate-400">
+            <span>
+              {lang === 'ar'
+                ? 'معمارية برمجية منفصلة: دجانجو ريست (الخادم) + رياكت (الواجهة)'
+                : 'Decoupled Django REST + React Architecture'}
+            </span>
           </div>
         </div>
       </footer>

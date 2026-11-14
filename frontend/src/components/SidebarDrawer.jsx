@@ -29,73 +29,80 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
 
   const locInfo = bootstrap?.mission_locations?.[location] || {
     comm_delay_display: '< 1 second',
+    comm_delay_display_ar: 'أقل من ثانية واحدة',
     autonomy_level: 'Medium'
   };
 
   const scenariosList = [
     {
       id: "0",
-      title_ar: "الحالة الطبيعية المستقرة",
-      title_en: "0: Nominal (All Normal)",
-      desc_ar: "جميع المؤشرات طبيعية (نبض 68، أكسجين 97%، 0 إنذارات)",
-      desc_en: "HR: 68, SpO2: 97%, 0 alerts",
+      title_ar: "0: الحالة الطبيعية المستقرة (0 إنذارات)",
+      title_en: "0: Nominal State (0 Alerts)",
+      desc_ar: "جميع المؤشرات طبيعية (نبض 68، أكسجين 97%، تنفس 15)",
+      desc_en: "All vitals normal (HR 68 bpm, SpO2 97%, RR 15 bpm)",
       icon: CheckCircle2,
       badge_ar: "طبيعي مستقر",
+      badge_en: "Nominal",
       baseStyle: "border-slate-800 bg-slate-950/60 hover:border-emerald-500/50",
       activeStyle: "border-emerald-500 bg-emerald-950/40 text-emerald-300 ring-2 ring-emerald-500/50 shadow-lg shadow-emerald-500/20"
     },
     {
       id: "1",
-      title_ar: "سيناريو 1: تسارع ونقص أكسجين",
-      title_en: "1: Tachycardia + Hypoxia",
+      title_ar: "1: تسارع ضربات القلب ونقص الأكسجين",
+      title_en: "1: Tachycardia + Hypoxia Crisis",
       desc_ar: "المهندس عمر: نبض 131، أكسجين 90%، تنفس 27",
-      desc_en: "Eng. Omar: HR 131, SpO2 90%, RR 27",
+      desc_en: "Eng. Omar: HR 131 bpm, SpO2 90.0%, RR 27 bpm",
       icon: Activity,
       badge_ar: "حرج أحمر",
+      badge_en: "Critical Red",
       baseStyle: "border-slate-800 bg-slate-950/60 hover:border-red-500/50",
       activeStyle: "border-red-500 bg-red-950/40 text-red-300 ring-2 ring-red-500/50 shadow-lg shadow-red-500/20"
     },
     {
       id: "2",
-      title_ar: "سيناريو 2: حمى الفضاء وارتفاع الحرارة",
+      title_ar: "2: حمى الفضاء وارتفاع الحرارة",
       title_en: "2: Space Fever (+1.4°C)",
       desc_ar: "د. سارة: حرارة 38.33°م (احتباس العرق وانعدام التبريد)",
       desc_en: "Dr. Sara: Temp 38.33°C (Sweat film insulation)",
       icon: Flame,
       badge_ar: "حرج أحمر",
+      badge_en: "Critical Red",
       baseStyle: "border-slate-800 bg-slate-950/60 hover:border-red-500/50",
       activeStyle: "border-red-500 bg-red-950/40 text-red-300 ring-2 ring-red-500/50 shadow-lg shadow-red-500/20"
     },
     {
       id: "3",
-      title_ar: "سيناريو 3: حرمان النوم وإرهاق",
-      title_en: "3: Sleep Deprivation",
-      desc_ar: "القائدة ليلى: نوم 4.2 س/ليلة وهبوط حاد في HRV",
+      title_ar: "3: حرمان النوم والإجهاد العصبي",
+      title_en: "3: Cumulative Sleep Deprivation",
+      desc_ar: "القائدة ليلى: نوم 4.2 ساعة وهبوط تقلب ضربات القلب",
       desc_en: "Cmdr. Layla: Sleep 4.2h, Low HRV (22ms)",
       icon: Moon,
       badge_ar: "تحذير أصفر",
+      badge_en: "Warning Amber",
       baseStyle: "border-slate-800 bg-slate-950/60 hover:border-amber-500/50",
       activeStyle: "border-amber-500 bg-amber-950/40 text-amber-300 ring-2 ring-amber-500/50 shadow-lg shadow-amber-500/20"
     },
     {
       id: "4",
-      title_ar: "سيناريو 4: ارتفاع ثاني أكسيد الكربون",
-      title_en: "4: Cabin CO2 Spike",
-      desc_ar: "ارتفاع CO2 إلى 5.8 ملم زئبق وصداع أمامي ونعاس",
-      desc_en: "Cabin CO2: 5.8 mmHg with headache",
+      title_ar: "4: ارتفاع تركيز ثاني أكسيد الكربون",
+      title_en: "4: Cabin CO2 Elevation",
+      desc_ar: "ثاني أكسيد الكربون 5.8 ملم زئبق مع صداع وإجهاد",
+      desc_en: "Cabin CO2: 5.8 mmHg with headache & drowsiness",
       icon: Wind,
       badge_ar: "تحذير أصفر",
+      badge_en: "Warning Amber",
       baseStyle: "border-slate-800 bg-slate-950/60 hover:border-yellow-500/50",
       activeStyle: "border-yellow-500 bg-yellow-950/40 text-yellow-300 ring-2 ring-yellow-500/50 shadow-lg shadow-yellow-500/20"
     },
     {
       id: "5",
-      title_ar: "سيناريو 5: طوارئ إنعاش القلب (CPR)",
-      title_en: "5: Cardiac Emergency",
-      desc_ar: "توقف النبض والتنفس (لوح CMRS وجهاز AED)",
-      desc_en: "Cardiac arrest in zero-G (CPR & Defibrillator)",
+      title_ar: "5: طوارئ إنعاش القلب في الفضاء",
+      title_en: "5: Zero-G Cardiac Emergency",
+      desc_ar: "توقف القلب والتنفس (أحزمة التثبيت وجهاز إزالة الرجفان)",
+      desc_en: "Cardiac arrest in microgravity (CMRS & Defibrillator)",
       icon: HeartPulse,
       badge_ar: "طوارئ قصوى",
+      badge_en: "Emergency",
       baseStyle: "border-slate-800 bg-slate-950/60 hover:border-rose-500/50",
       activeStyle: "border-rose-500 bg-rose-950/40 text-rose-300 ring-2 ring-rose-500/50 shadow-lg shadow-rose-500/20"
     }
@@ -107,7 +114,7 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
       <div 
         onClick={onClose}
         className="fixed inset-0 bg-slate-950/50 backdrop-blur-[2px] transition-opacity cursor-pointer"
-        title="انقر هنا لإغلاق القائمة"
+        title={lang === 'ar' ? 'انقر هنا لإغلاق القائمة' : 'Click to close'}
       />
 
       <div className={`fixed inset-y-0 ${lang === 'ar' ? 'right-0' : 'left-0'} max-w-full flex`}>
@@ -121,10 +128,10 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
               </div>
               <div>
                 <h2 className="text-sm sm:text-base font-bold font-mono text-white">
-                  {lang === 'ar' ? 'لوحة التحكم والمحاكاة الطبية' : 'Mission & Simulation Controls'}
+                  {lang === 'ar' ? 'لوحة المحاكاة والتحكم في المهمة' : 'Mission & Simulation Controls'}
                 </h2>
                 <p className="text-[11px] text-slate-400 font-sans">
-                  {lang === 'ar' ? 'اختر أي سيناريو لرؤية الاستجابة الفورية بالداشبورد' : 'Select any scenario to see instant dashboard updates'}
+                  {lang === 'ar' ? 'اختر أي سيناريو لرؤية التحديث الفوري في الداشبورد' : 'Select any scenario to see instant dashboard updates'}
                 </p>
               </div>
             </div>
@@ -132,7 +139,7 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
             <button
               onClick={onClose}
               className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
-              title="إغلاق القائمة"
+              title={lang === 'ar' ? 'إغلاق القائمة' : 'Close Drawer'}
             >
               <X className="w-5 h-5" />
             </button>
@@ -141,18 +148,18 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
           {/* Current Live Status Box Inside Drawer */}
           {currentVitals && (
             <div className="bg-slate-950 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between text-xs font-mono">
-              <span className="text-slate-400">{lang === 'ar' ? 'القراءة اللحظية الحالية:' : 'Live Telemetry:'}</span>
+              <span className="text-slate-400">{lang === 'ar' ? 'القياسات الحالية:' : 'Live Telemetry:'}</span>
               <div className="flex items-center gap-2 font-bold">
                 <span className={currentVitals.heart_rate >= 115 || currentVitals.heart_rate < 40 ? 'text-red-400' : 'text-emerald-400'}>
-                  HR: {currentVitals.heart_rate} bpm
+                  {lang === 'ar' ? `النبض: ${currentVitals.heart_rate} ن/د` : `HR: ${currentVitals.heart_rate} bpm`}
                 </span>
                 <span className="text-slate-600">|</span>
                 <span className={currentVitals.spo2 <= 90.0 ? 'text-red-400' : 'text-cyan-400'}>
-                  SpO2: {currentVitals.spo2}%
+                  {lang === 'ar' ? `الأكسجين: ${currentVitals.spo2}%` : `SpO2: ${currentVitals.spo2}%`}
                 </span>
                 <span className="text-slate-600">|</span>
                 <span className={currentVitals.body_temperature >= 38.3 ? 'text-red-400' : 'text-amber-400'}>
-                  {currentVitals.body_temperature}°C
+                  {lang === 'ar' ? `الحرارة: ${currentVitals.body_temperature}°م` : `${currentVitals.body_temperature}°C`}
                 </span>
               </div>
             </div>
@@ -166,10 +173,10 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
               <div className="flex items-center justify-between">
                 <label className="text-xs font-mono font-bold text-slate-200 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-cyan-400" />
-                  <span>{lang === 'ar' ? '1. اختر سيناريو المحاكاة:' : '1. Select Simulation Scenario:'}</span>
+                  <span>{lang === 'ar' ? '1. سيناريو المحاكاة الطبي:' : '1. Medical Simulation Scenario:'}</span>
                 </label>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
-                  {lang === 'ar' ? 'تحديث فوري 0ms' : 'Instant 0ms'}
+                  {lang === 'ar' ? 'تحديث فوري' : 'Instant Trigger'}
                 </span>
               </div>
 
@@ -231,7 +238,10 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
               >
                 {astronauts.map((ast) => (
                   <option key={ast.id} value={ast.id}>
-                    {ast.id} — {lang === 'ar' ? ast.name_ar : ast.name} ({ast.role})
+                    {lang === 'ar' 
+                      ? `${ast.id} — ${ast.name_ar || ast.name} (${ast.role_ar || ast.role})`
+                      : `${ast.id} — ${ast.name} (${ast.role})`
+                    }
                   </option>
                 ))}
               </select>
@@ -242,9 +252,11 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
               <label className="text-xs font-mono font-bold text-slate-200 flex items-center justify-between">
                 <span className="flex items-center gap-2">
                   <Radio className="w-4 h-4 text-cyan-400" />
-                  <span>{lang === 'ar' ? '3. الموقع الفضائي وتأخير الاتصال:' : '3. Mission Location & Delay:'}</span>
+                  <span>{lang === 'ar' ? '3. موقع المهمة وزمن تأخير الإشارة:' : '3. Mission Location & Delay:'}</span>
                 </span>
-                <span className="text-[10px] font-mono text-cyan-400">{locInfo.comm_delay_display}</span>
+                <span className="text-[10px] font-mono text-cyan-400">
+                  {lang === 'ar' ? (locInfo.comm_delay_display_ar || 'أقل من ثانية') : (locInfo.comm_delay_display || '< 1 second')}
+                </span>
               </label>
 
               <select
@@ -252,9 +264,19 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
                 onChange={(e) => changeLocation(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-700 text-white font-mono text-xs rounded-xl p-2.5 outline-none focus:border-cyan-400 cursor-pointer"
               >
-                <option value="ISS">ISS — محطة الفضاء الدولية (تأخير: &lt; 1 ثانية)</option>
-                <option value="Moon">Moon Gateway — مدار القمر (تأخير: 1.3 ثانية)</option>
-                <option value="Mars">Mars Deep Space — مهمة المريخ (تأخير: 5–20 دقيقة)</option>
+                {lang === 'ar' ? (
+                  <>
+                    <option value="ISS">محطة الفضاء الدولية (تأخير الإشارة: أقل من ثانية)</option>
+                    <option value="Moon">بوابة مدار القمر (تأخير الإشارة: 1.3 ثانية)</option>
+                    <option value="Mars">مهمة كوكب المريخ (تأخير الإشارة: 5–20 دقيقة)</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="ISS">International Space Station (Comm Delay: &lt; 1 sec)</option>
+                    <option value="Moon">Lunar Gateway Orbit (Comm Delay: 1.3 sec)</option>
+                    <option value="Mars">Mars Deep Space Mission (Comm Delay: 5–20 min)</option>
+                  </>
+                )}
               </select>
             </div>
 
@@ -272,10 +294,21 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
                 onChange={(e) => changeActivity(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-700 text-white font-mono text-xs rounded-xl p-2.5 outline-none focus:border-emerald-400 cursor-pointer"
               >
-                <option value="rest">راحة واسترخاء (Rest)</option>
-                <option value="light">نشاط خفيف وصيانة (Light Work)</option>
-                <option value="sleep">نوم واسترجاع حيوي (Sleep)</option>
-                <option value="exercise">تمارين رياضية إجبارية (Exercise)</option>
+                {lang === 'ar' ? (
+                  <>
+                    <option value="rest">راحة واسترخاء</option>
+                    <option value="light">نشاط خفيف وصيانة</option>
+                    <option value="sleep">نوم واسترجاع حيوي</option>
+                    <option value="exercise">تمارين رياضية إجبارية</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="rest">Rest & Relaxation</option>
+                    <option value="light">Light Work & Maintenance</option>
+                    <option value="sleep">Sleep & Recovery</option>
+                    <option value="exercise">Mandatory Exercise Countermeasure</option>
+                  </>
+                )}
               </select>
             </div>
 
@@ -285,7 +318,7 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
               className="w-full py-3 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-mono text-xs font-bold transition-all shadow-lg shadow-cyan-600/20 flex items-center justify-center gap-2 cursor-pointer"
             >
               <Eye className="w-4 h-4" />
-              <span>{lang === 'ar' ? 'عرض النتائج في لوحة المتابعة' : 'Close & View Live Dashboard'}</span>
+              <span>{lang === 'ar' ? 'إغلاق القائمة والعودة للداشبورد' : 'Close & View Live Dashboard'}</span>
             </button>
           </div>
         </div>

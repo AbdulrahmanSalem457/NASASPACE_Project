@@ -4,8 +4,120 @@ import { TRANSLATIONS } from '../utils/translations';
 
 const AstroContext = createContext(null);
 
+// Deterministic NASA Reference Scenario Presets for Instant Reactive UI
+const SCENARIO_PRESETS = {
+  '0': {
+    astronautId: 'AST-02',
+    activity: 'rest',
+    vitals: {
+      heart_rate: 68.0,
+      systolic_bp: 116.0,
+      diastolic_bp: 72.0,
+      spo2: 97.0,
+      respiratory_rate: 15.0,
+      body_temperature: 36.9,
+      cabin_co2: 3.2,
+      hrv_rmssd: 50.0,
+      daily_radiation: 0.55,
+      sleep_duration: 6.8,
+      exercise_hours: 2.5,
+      status: 'normal'
+    }
+  },
+  '1': {
+    astronautId: 'AST-02',
+    activity: 'light',
+    vitals: {
+      heart_rate: 131.0,
+      systolic_bp: 138.0,
+      diastolic_bp: 82.0,
+      spo2: 90.0,
+      respiratory_rate: 27.0,
+      body_temperature: 36.9,
+      cabin_co2: 3.2,
+      hrv_rmssd: 45.0,
+      daily_radiation: 0.55,
+      sleep_duration: 6.8,
+      exercise_hours: 2.5,
+      status: 'critical'
+    }
+  },
+  '2': {
+    astronautId: 'AST-03',
+    activity: 'rest',
+    vitals: {
+      heart_rate: 84.0,
+      systolic_bp: 112.0,
+      diastolic_bp: 71.0,
+      spo2: 98.0,
+      respiratory_rate: 16.0,
+      body_temperature: 38.33,
+      cabin_co2: 3.2,
+      hrv_rmssd: 48.0,
+      daily_radiation: 0.55,
+      sleep_duration: 6.8,
+      exercise_hours: 2.5,
+      status: 'critical'
+    }
+  },
+  '3': {
+    astronautId: 'AST-01',
+    activity: 'rest',
+    vitals: {
+      heart_rate: 74.0,
+      systolic_bp: 115.0,
+      diastolic_bp: 72.0,
+      spo2: 97.2,
+      respiratory_rate: 16.0,
+      body_temperature: 36.8,
+      sleep_duration: 4.2,
+      hrv_rmssd: 22.0,
+      cabin_co2: 3.2,
+      daily_radiation: 0.55,
+      exercise_hours: 2.5,
+      status: 'warning'
+    }
+  },
+  '4': {
+    astronautId: 'AST-02',
+    activity: 'light',
+    vitals: {
+      heart_rate: 76.0,
+      systolic_bp: 120.0,
+      diastolic_bp: 75.0,
+      spo2: 96.5,
+      respiratory_rate: 18.0,
+      body_temperature: 36.9,
+      cabin_co2: 5.8,
+      hrv_rmssd: 40.0,
+      daily_radiation: 0.55,
+      sleep_duration: 6.8,
+      exercise_hours: 2.5,
+      status: 'warning'
+    }
+  },
+  '5': {
+    astronautId: 'AST-01',
+    activity: 'rest',
+    vitals: {
+      heart_rate: 0.0,
+      systolic_bp: 0.0,
+      diastolic_bp: 0.0,
+      spo2: 60.0,
+      respiratory_rate: 0.0,
+      body_temperature: 36.5,
+      cabin_co2: 3.2,
+      hrv_rmssd: 0.0,
+      daily_radiation: 0.55,
+      sleep_duration: 6.8,
+      exercise_hours: 2.5,
+      status: 'emergency'
+    }
+  }
+};
+
 export const AstroProvider = ({ children }) => {
-  const [lang, setLang] = useState(() => localStorage.getItem('astrovitals_lang') || 'ar'); // Default to Arabic for user comfort
+  const [lang, setLang] = useState(() => localStorage.getItem('astrovitals_lang') || 'ar');
   const [bootstrap, setBootstrap] = useState(null);
   const [astronauts, setAstronauts] = useState([]);
   const [selectedAstronautId, setSelectedAstronautId] = useState('AST-02'); // Eng. Omar
@@ -14,9 +126,8 @@ export const AstroProvider = ({ children }) => {
   const [alerts, setAlerts] = useState([]);
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const [isSirenActive, setIsSirenActive] = useState(false);
   const [activeScenario, setActiveScenario] = useState('0'); // Default to Nominal scenario!
-  const [currentVitals, setCurrentVitals] = useState(null);
+  const [currentVitals, setCurrentVitals] = useState(SCENARIO_PRESETS['0'].vitals);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [commCountdown, setCommCountdown] = useState(null);
@@ -29,14 +140,7 @@ export const AstroProvider = ({ children }) => {
     const next = lang === 'en' ? 'ar' : 'en';
     setLang(next);
     localStorage.setItem('astrovitals_lang', next);
-    document.documentElement.dir = next === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = next;
   };
-
-  useEffect(() => {
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = lang;
-  }, [lang]);
 
   // Load bootstrap on mount
   const loadBootstrap = useCallback(async () => {
@@ -46,24 +150,7 @@ export const AstroProvider = ({ children }) => {
       setBootstrap(data);
       setAstronauts(data.astronauts || []);
 
-      // Initialize with Eng. Omar (AST-02) nominal baselines
-      const defaultAst = (data.astronauts || []).find(a => a.id === 'AST-02') || data.astronauts?.[0];
-      if (defaultAst) {
-        setCurrentVitals({
-          heart_rate: defaultAst.hr_mean,
-          systolic_bp: defaultAst.sys_bp_mean,
-          diastolic_bp: defaultAst.dia_bp_mean,
-          spo2: defaultAst.spo2_mean,
-          respiratory_rate: defaultAst.resp_rate_mean,
-          body_temperature: defaultAst.body_temp_mean,
-          cabin_co2: defaultAst.cabin_co2 || 3.2,
-          hrv_rmssd: defaultAst.hrv_rmssd || 48.0,
-          daily_radiation: defaultAst.daily_radiation || 0.58,
-          status: 'normal'
-        });
-      }
-
-      // In initial nominal mode, start with 0 alerts
+      // In initial nominal mode, start with 0 alerts and nominal vitals
       setAlerts([]);
       setIsLoading(false);
     } catch (err) {
@@ -79,24 +166,26 @@ export const AstroProvider = ({ children }) => {
 
   const selectedAstronaut = astronauts.find(a => a.id === selectedAstronautId) || astronauts[0] || null;
 
-  // Whenever astronaut changes, update currentVitals if in nominal mode
-  useEffect(() => {
-    if (selectedAstronaut && (activeScenario === '0' || !activeScenario)) {
+  // Change astronaut handler
+  const changeAstronaut = (id) => {
+    setSelectedAstronautId(id);
+    const ast = astronauts.find(a => a.id === id);
+    if (ast && (activeScenario === '0' || !activeScenario)) {
       setCurrentVitals({
-        heart_rate: selectedAstronaut.hr_mean,
-        systolic_bp: selectedAstronaut.sys_bp_mean,
-        diastolic_bp: selectedAstronaut.dia_bp_mean,
-        spo2: selectedAstronaut.spo2_mean,
-        respiratory_rate: selectedAstronaut.resp_rate_mean,
-        body_temperature: selectedAstronaut.body_temp_mean,
-        cabin_co2: selectedAstronaut.cabin_co2 || 3.2,
-        hrv_rmssd: selectedAstronaut.hrv_rmssd || 50.0,
-        daily_radiation: selectedAstronaut.daily_radiation || 0.55,
+        heart_rate: ast.hr_mean,
+        systolic_bp: ast.sys_bp_mean,
+        diastolic_bp: ast.dia_bp_mean,
+        spo2: ast.spo2_mean,
+        respiratory_rate: ast.resp_rate_mean,
+        body_temperature: ast.body_temp_mean,
+        cabin_co2: ast.cabin_co2 || 3.2,
+        hrv_rmssd: ast.hrv_rmssd || 50.0,
+        daily_radiation: ast.daily_radiation || 0.55,
         status: 'normal'
       });
       setAlerts([]);
     }
-  }, [selectedAstronautId]);
+  };
 
   // Sync activity & location changes
   const changeActivity = async (newAct) => {
@@ -190,58 +279,52 @@ export const AstroProvider = ({ children }) => {
     };
   };
 
+  // IMMEDIATE DETERMINISTIC SCENARIO TRIGGER (Zero-Latency UI Reaction)
   const triggerScenario = async (scenarioId, mode = 'cardiac_arrest') => {
-    try {
-      setActiveScenario(scenarioId);
+    const scKey = String(scenarioId);
+    setActiveScenario(scKey);
 
-      // SCENARIO 0: NOMINAL / ALL NORMAL
-      if (scenarioId === '0' || scenarioId === 'nominal') {
-        setIsAlertModalOpen(false);
-
-        await apiClient.activateScenario('0');
-        const ast = selectedAstronaut || astronauts[0];
-        if (ast) {
-          setCurrentVitals({
-            heart_rate: ast.hr_mean,
-            systolic_bp: ast.sys_bp_mean,
-            diastolic_bp: ast.dia_bp_mean,
-            spo2: ast.spo2_mean,
-            respiratory_rate: ast.resp_rate_mean,
-            body_temperature: ast.body_temp_mean,
-            cabin_co2: ast.cabin_co2 || 3.2,
-            hrv_rmssd: ast.hrv_rmssd || 50.0,
-            daily_radiation: ast.daily_radiation || 0.55,
-            status: 'normal'
-          });
-        }
+    // 1. INSTANT OPTIMISTIC STATE UPDATE
+    const preset = SCENARIO_PRESETS[scKey];
+    if (preset) {
+      if (preset.astronautId) setSelectedAstronautId(preset.astronautId);
+      if (preset.activity) setActivity(preset.activity);
+      if (preset.vitals) {
+        setCurrentVitals({
+          ...preset.vitals
+        });
+      }
+      if (scKey === '0') {
         setAlerts([]);
         setSelectedAlert(null);
-        return;
+        setIsAlertModalOpen(false);
       }
+    }
 
-      // NON-NOMINAL SCENARIOS
-      const res = await apiClient.activateScenario(scenarioId, mode);
-
+    // 2. BACKEND SYNC (Persist to SQLite and trigger Alerts Engine)
+    try {
+      const res = await apiClient.activateScenario(scKey, mode);
       if (res.astronaut) {
         setSelectedAstronautId(res.astronaut.id);
         if (res.astronaut.current_activity) setActivity(res.astronaut.current_activity);
       }
-
-      // VITAL READINGS UPDATE DIRECTLY ON THE CARDS!
       if (res.current_reading) {
         setCurrentVitals(prev => ({
           ...prev,
           ...res.current_reading
         }));
       }
-
-      await refreshAlerts();
-
-      if (res.alert) {
-        setSelectedAlert(res.alert);
+      if (scKey === '0') {
+        setAlerts([]);
+        setSelectedAlert(null);
+      } else {
+        await refreshAlerts();
+        if (res.alert) {
+          setSelectedAlert(res.alert);
+        }
       }
     } catch (e) {
-      console.error(`Error activating scenario ${scenarioId}:`, e);
+      console.warn(`Backend sync for scenario ${scKey} failed (using local reference preset):`, e);
     }
   };
 
@@ -258,6 +341,7 @@ export const AstroProvider = ({ children }) => {
         selectedAstronaut,
         selectedAstronautId,
         setSelectedAstronautId,
+        changeAstronaut,
         location,
         changeLocation,
         activity,
@@ -268,7 +352,7 @@ export const AstroProvider = ({ children }) => {
         isAlertModalOpen,
         openAlertModal,
         closeAlertModal,
-        isSirenActive,
+        isSirenActive: false,
         toggleSirenSound,
         activeScenario,
         triggerScenario,

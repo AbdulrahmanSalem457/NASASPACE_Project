@@ -7,8 +7,6 @@ const AstroContext = createContext(null);
 // Deterministic NASA Reference Scenario Presets for Instant Reactive UI
 const SCENARIO_PRESETS = {
   '0': {
-    astronautId: 'AST-02',
-    activity: 'rest',
     vitals: {
       heart_rate: 68.0,
       systolic_bp: 116.0,
@@ -25,8 +23,6 @@ const SCENARIO_PRESETS = {
     }
   },
   '1': {
-    astronautId: 'AST-02',
-    activity: 'light',
     vitals: {
       heart_rate: 131.0,
       systolic_bp: 138.0,
@@ -43,8 +39,6 @@ const SCENARIO_PRESETS = {
     }
   },
   '2': {
-    astronautId: 'AST-03',
-    activity: 'rest',
     vitals: {
       heart_rate: 84.0,
       systolic_bp: 112.0,
@@ -61,8 +55,6 @@ const SCENARIO_PRESETS = {
     }
   },
   '3': {
-    astronautId: 'AST-01',
-    activity: 'rest',
     vitals: {
       heart_rate: 74.0,
       systolic_bp: 115.0,
@@ -79,8 +71,6 @@ const SCENARIO_PRESETS = {
     }
   },
   '4': {
-    astronautId: 'AST-02',
-    activity: 'light',
     vitals: {
       heart_rate: 76.0,
       systolic_bp: 120.0,
@@ -97,8 +87,6 @@ const SCENARIO_PRESETS = {
     }
   },
   '5': {
-    astronautId: 'AST-01',
-    activity: 'rest',
     vitals: {
       heart_rate: 0.0,
       systolic_bp: 0.0,
@@ -280,6 +268,7 @@ export const AstroProvider = ({ children }) => {
   };
 
   // IMMEDIATE DETERMINISTIC SCENARIO TRIGGER (Zero-Latency UI Reaction)
+  // Astronaut and Activity remain strictly fixed on the user's manual selection
   const triggerScenario = async (scenarioId, mode = 'cardiac_arrest') => {
     const scKey = String(scenarioId);
     setActiveScenario(scKey);
@@ -287,27 +276,37 @@ export const AstroProvider = ({ children }) => {
     // 1. INSTANT OPTIMISTIC STATE UPDATE
     const preset = SCENARIO_PRESETS[scKey];
     if (preset) {
-      if (preset.astronautId) setSelectedAstronautId(preset.astronautId);
-      if (preset.activity) setActivity(preset.activity);
-      if (preset.vitals) {
+      if (scKey === '0') {
+        const ast = selectedAstronaut || astronauts[0];
+        if (ast) {
+          setCurrentVitals({
+            heart_rate: ast.hr_mean,
+            systolic_bp: ast.sys_bp_mean,
+            diastolic_bp: ast.dia_bp_mean,
+            spo2: ast.spo2_mean,
+            respiratory_rate: ast.resp_rate_mean,
+            body_temperature: ast.body_temp_mean,
+            cabin_co2: ast.cabin_co2 || 3.2,
+            hrv_rmssd: ast.hrv_rmssd || 50.0,
+            daily_radiation: ast.daily_radiation || 0.55,
+            sleep_duration: ast.sleep_duration || 6.8,
+            exercise_hours: ast.exercise_hours || 2.5,
+            status: 'normal'
+          });
+        }
+        setAlerts([]);
+        setSelectedAlert(null);
+        setIsAlertModalOpen(false);
+      } else if (preset.vitals) {
         setCurrentVitals({
           ...preset.vitals
         });
       }
-      if (scKey === '0') {
-        setAlerts([]);
-        setSelectedAlert(null);
-        setIsAlertModalOpen(false);
-      }
     }
 
-    // 2. BACKEND SYNC (Persist to SQLite and trigger Alerts Engine)
+    // 2. BACKEND SYNC (Persist to SQLite with the user's chosen astronaut and activity)
     try {
-      const res = await apiClient.activateScenario(scKey, mode);
-      if (res.astronaut) {
-        setSelectedAstronautId(res.astronaut.id);
-        if (res.astronaut.current_activity) setActivity(res.astronaut.current_activity);
-      }
+      const res = await apiClient.activateScenario(scKey, mode, selectedAstronautId, activity);
       if (res.current_reading) {
         setCurrentVitals(prev => ({
           ...prev,

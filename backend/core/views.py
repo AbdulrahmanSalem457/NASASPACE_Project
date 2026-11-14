@@ -395,12 +395,26 @@ class ActivateScenarioView(APIView):
 
         return handler(request)
 
+    def get_target_astronaut(self, request, default_id='AST-02'):
+        ast_id = request.data.get('astronaut_id')
+        if ast_id:
+            try:
+                return Astronaut.objects.get(id=ast_id)
+            except Astronaut.DoesNotExist:
+                pass
+        try:
+            return Astronaut.objects.get(id=default_id)
+        except Astronaut.DoesNotExist:
+            return Astronaut.objects.first()
+
     def activate_scenario_0(self, request):
         # Scenario 0: Nominal State (All vitals normal, 0 alerts)
+        ast = self.get_target_astronaut(request, 'AST-02')
         MedicalAlert.objects.filter(is_active=True).update(is_active=False)
-        ast = Astronaut.objects.get(id='AST-02')
-        ast.current_activity = 'rest'
-        ast.save()
+        user_activity = request.data.get('activity')
+        if user_activity:
+            ast.current_activity = user_activity
+            ast.save()
 
         reading = VitalReading.objects.create(
             astronaut=ast,
@@ -430,7 +444,7 @@ class ActivateScenarioView(APIView):
                 "spo2": ast.spo2_mean,
                 "respiratory_rate": ast.resp_rate_mean,
                 "body_temperature": ast.body_temp_mean,
-                "activity": "rest",
+                "activity": ast.current_activity,
                 "status": "normal",
                 "cabin_co2": 3.2,
                 "hrv_rmssd": ast.hrv_rmssd,
@@ -439,10 +453,12 @@ class ActivateScenarioView(APIView):
         })
 
     def activate_scenario_1(self, request):
-        # Scenario 1: Tachycardia + Hypoxia Episode (AST-02 Eng. Omar)
-        ast = Astronaut.objects.get(id='AST-02')
-        ast.current_activity = 'light'
-        ast.save()
+        # Scenario 1: Tachycardia + Hypoxia Episode
+        ast = self.get_target_astronaut(request, 'AST-02')
+        user_activity = request.data.get('activity')
+        if user_activity:
+            ast.current_activity = user_activity
+            ast.save()
 
         VitalReading.objects.create(
             astronaut=ast,
@@ -453,6 +469,12 @@ class ActivateScenarioView(APIView):
             spo2=90.0,
             respiratory_rate=27.0,
             body_temperature=36.9,
+            activity=ast.current_activity,
+            status='critical',
+            cabin_co2=3.2,
+            hrv_rmssd=45.0,
+            radiation_rate=0.55
+        )
             activity=ast.current_activity,
             status='critical',
             cabin_co2=3.2,
@@ -503,10 +525,12 @@ class ActivateScenarioView(APIView):
         })
 
     def activate_scenario_2(self, request):
-        # Scenario 2: Gradual Hyperthermia (AST-03 Dr. Sara)
-        ast = Astronaut.objects.get(id='AST-03')
-        ast.current_activity = 'rest'
-        ast.save()
+        # Scenario 2: Gradual Hyperthermia
+        ast = self.get_target_astronaut(request, 'AST-03')
+        user_activity = request.data.get('activity')
+        if user_activity:
+            ast.current_activity = user_activity
+            ast.save()
 
         VitalReading.objects.create(
             astronaut=ast,
@@ -567,10 +591,13 @@ class ActivateScenarioView(APIView):
         })
 
     def activate_scenario_3(self, request):
-        # Scenario 3: Cumulative Sleep Deprivation (< 5 hrs + Low HRV)
-        ast = Astronaut.objects.get(id='AST-01')
+        # Scenario 3: Cumulative Sleep Deprivation
+        ast = self.get_target_astronaut(request, 'AST-01')
         ast.sleep_duration = 4.2
         ast.hrv_rmssd = 22.0
+        user_activity = request.data.get('activity')
+        if user_activity:
+            ast.current_activity = user_activity
         ast.save()
 
         VitalReading.objects.create(
@@ -582,7 +609,7 @@ class ActivateScenarioView(APIView):
             spo2=97.2,
             respiratory_rate=16.0,
             body_temperature=36.8,
-            activity='rest',
+            activity=ast.current_activity,
             status='warning',
             cabin_co2=3.2,
             hrv_rmssd=22.0,
@@ -634,8 +661,11 @@ class ActivateScenarioView(APIView):
 
     def activate_scenario_4(self, request):
         # Scenario 4: Cabin CO2 Spike (> 5.3 mmHg + Headache)
-        ast = Astronaut.objects.get(id='AST-02')
+        ast = self.get_target_astronaut(request, 'AST-02')
         ast.cabin_co2 = 5.8
+        user_activity = request.data.get('activity')
+        if user_activity:
+            ast.current_activity = user_activity
         ast.save()
 
         VitalReading.objects.create(
@@ -700,7 +730,11 @@ class ActivateScenarioView(APIView):
     def activate_scenario_5(self, request):
         # Scenario 5: Solar Particle Event (SPE) / EVA Cardiac Emergency
         mode = request.data.get('mode', 'cardiac_arrest') # or 'spe'
-        ast = Astronaut.objects.get(id='AST-01')
+        ast = self.get_target_astronaut(request, 'AST-01')
+        user_activity = request.data.get('activity')
+        if user_activity:
+            ast.current_activity = user_activity
+            ast.save()
 
         chk = copy.deepcopy(STANDARD_CHECKLIST_TEMPLATE)
         chk[0]["completed"] = True

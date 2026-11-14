@@ -61,11 +61,14 @@ export const apiClient = {
     return await res.json();
   },
 
-  async activateScenario(scenarioId, mode = 'cardiac_arrest') {
+  async activateScenario(scenarioId, mode = 'cardiac_arrest', astronautId = null, activity = null) {
+    const body = { mode };
+    if (astronautId) body.astronaut_id = astronautId;
+    if (activity) body.activity = activity;
     const res = await fetch(`${API_BASE}/scenarios/${scenarioId}/activate/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode })
+      body: JSON.stringify(body)
     });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     return await res.json();

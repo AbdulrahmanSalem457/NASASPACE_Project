@@ -163,7 +163,7 @@ export const HealthReportsTab = () => {
       {isLoading && !report ? (
         <div className="py-12 flex items-center justify-center text-slate-400 font-mono text-xs">
           <RefreshCw className="w-5 h-5 animate-spin mr-2 text-cyan-400" />
-          جاري تحميل وتحديث الإحصائيات...
+          {lang === 'ar' ? 'جاري تحميل وتحديث الإحصائيات...' : 'Loading & updating statistics...'}
         </div>
       ) : (
         <div className="space-y-5">
@@ -187,8 +187,8 @@ export const HealthReportsTab = () => {
                 />
               </div>
               <div className="text-[11px] font-mono text-slate-400 flex justify-between">
-                <span>المنفذ: {liveExercise} س/يوم</span>
-                <span>الهدف الإلزامي: 2.5 س/يوم</span>
+                <span>{lang === 'ar' ? `المنفذ: ${liveExercise} س/يوم` : `Actual: ${liveExercise} hrs/day`}</span>
+                <span>{lang === 'ar' ? 'الهدف الإلزامي: 2.5 س/يوم' : 'Target: 2.5 hrs/day'}</span>
               </div>
             </div>
 
@@ -208,7 +208,9 @@ export const HealthReportsTab = () => {
                     ? 'bg-amber-500 text-slate-950 border-amber-400' 
                     : 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30'
                 }`}>
-                  {activeScenario === '3' ? 'عجز وإرهاق (Deficit)' : 'ملائم (Adequate)'}
+                  {activeScenario === '3' 
+                    ? (lang === 'ar' ? 'عجز وإرهاق' : 'Deficit & Fatigue') 
+                    : (lang === 'ar' ? 'ملائم ومستقر' : 'Adequate')}
                 </span>
               </div>
               <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
@@ -218,8 +220,8 @@ export const HealthReportsTab = () => {
                 />
               </div>
               <div className="text-[11px] font-mono text-slate-400 flex justify-between">
-                <span>المسجل: {liveSleep} س/ليلة</span>
-                <span>الهدف: 6.5 س/ليلة</span>
+                <span>{lang === 'ar' ? `المسجل: ${liveSleep} س/ليلة` : `Recorded: ${liveSleep} hrs/night`}</span>
+                <span>{lang === 'ar' ? 'الهدف: 6.5 س/ليلة' : 'Target: 6.5 hrs/night'}</span>
               </div>
             </div>
 
@@ -237,7 +239,9 @@ export const HealthReportsTab = () => {
                 <span className={`font-bold px-2 py-0.5 rounded border ${
                   activeScenario === '5' ? 'bg-red-600 text-white border-red-400' : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
                 }`}>
-                  {activeScenario === '5' ? 'عاصفة إشعاعية (SPE)' : 'آمن (Safe)'}
+                  {activeScenario === '5' 
+                    ? (lang === 'ar' ? 'عاصفة إشعاعية (SPE)' : 'Radiation Storm (SPE)') 
+                    : (lang === 'ar' ? 'آمن وضمن الحدود' : 'Safe')}
                 </span>
               </div>
               <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
@@ -247,8 +251,8 @@ export const HealthReportsTab = () => {
                 />
               </div>
               <div className="text-[11px] font-mono text-slate-400 flex justify-between">
-                <span>الجرعة: {liveRad} ملي سيفرت/يوم</span>
-                <span>الحد المهني: 600 ملي سيفرت</span>
+                <span>{lang === 'ar' ? `الجرعة: ${liveRad} ملي سيفرت/يوم` : `Dose: ${liveRad} mSv/day`}</span>
+                <span>{lang === 'ar' ? 'الحد المهني: 600 ملي سيفرت' : 'Career Limit: 600 mSv'}</span>
               </div>
             </div>
           </div>
@@ -268,9 +272,11 @@ export const HealthReportsTab = () => {
               <table className="w-full text-xs font-mono">
                 <thead className="bg-slate-900 text-slate-400 text-[11px] border-b border-slate-800">
                   <tr>
-                    <th className="py-3 px-4 text-right">{lang === 'ar' ? 'المؤشر الحيوي' : 'Vital Parameter'}</th>
+                    <th className={`py-3 px-4 ${lang === 'ar' ? 'text-right' : 'text-left'}`}>
+                      {lang === 'ar' ? 'المؤشر الحيوي' : 'Vital Parameter'}
+                    </th>
                     <th className="py-3 px-4 text-center bg-cyan-950/40 text-cyan-300 font-bold border-x border-cyan-800/40">
-                      {lang === 'ar' ? '🔴 القراءة اللحظية الحالية (Live)' : '🔴 Current Live Reading'}
+                      {lang === 'ar' ? '🔴 القراءة اللحظية الحالية' : '🔴 Current Live Reading'}
                     </th>
                     <th className="py-3 px-4 text-center">{lang === 'ar' ? 'المتوسط' : 'Average'}</th>
                     <th className="py-3 px-4 text-center">{lang === 'ar' ? 'الأدنى' : 'Min'}</th>
@@ -296,7 +302,7 @@ export const HealthReportsTab = () => {
                     return (
                       <tr key={m.key} className={`transition-colors ${liveRowBg}`}>
                         {/* Name */}
-                        <td className="py-3 px-4 font-semibold text-slate-200 text-right">
+                        <td className={`py-3 px-4 font-semibold text-slate-200 ${lang === 'ar' ? 'text-right' : 'text-left'}`}>
                           {lang === 'ar' ? m.name_ar : m.name_en}
                         </td>
 
@@ -304,7 +310,12 @@ export const HealthReportsTab = () => {
                         <td className="py-3 px-4 text-center bg-cyan-950/20 border-x border-cyan-800/30">
                           <span className={`inline-block px-3 py-1 rounded-lg text-xs font-mono font-bold ${liveBadgeStyle}`}>
                             {m.liveVal} {m.unit}
-                            {m.isCritical ? ' (حرج)' : m.isWarning ? ' (تحذير)' : ' (طبيعي)'}
+                            {m.isCritical 
+                              ? (lang === 'ar' ? ' (حرج)' : ' (Critical)') 
+                              : m.isWarning 
+                              ? (lang === 'ar' ? ' (تحذير)' : ' (Warning)') 
+                              : (lang === 'ar' ? ' (طبيعي)' : ' (Normal)')
+                            }
                           </span>
                         </td>
 
@@ -344,25 +355,27 @@ export const HealthReportsTab = () => {
               <span className={`px-3 py-1 rounded-lg border font-bold ${
                 isNominal ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'
               }`}>
-                {isNominal ? 'طبيعي مستقر (0 إنذارات)' : 'Notice: 0'}
+                {isNominal 
+                  ? (lang === 'ar' ? 'طبيعي مستقر (0 إنذارات)' : 'Nominal (0 Alerts)') 
+                  : (lang === 'ar' ? 'ملاحظة: 0' : 'Notice: 0')}
               </span>
 
               <span className={`px-3 py-1 rounded-lg border font-bold ${
                 warningAlertsCount > 0 ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-800 text-slate-400 border-slate-700'
               }`}>
-                Warning: {warningAlertsCount}
+                {lang === 'ar' ? `تحذير: ${warningAlertsCount}` : `Warning: ${warningAlertsCount}`}
               </span>
 
               <span className={`px-3 py-1 rounded-lg border font-bold ${
                 criticalAlertsCount > 0 ? 'bg-red-600 text-white border-red-400 shadow-md animate-pulse' : 'bg-slate-800 text-slate-400 border-slate-700'
               }`}>
-                Critical: {criticalAlertsCount}
+                {lang === 'ar' ? `حرج: ${criticalAlertsCount}` : `Critical: ${criticalAlertsCount}`}
               </span>
 
               <span className={`px-3 py-1 rounded-lg border font-bold ${
                 activeScenario === '5' ? 'bg-rose-600 text-white border-rose-400 shadow-lg animate-pulse-fast' : 'bg-slate-800 text-slate-400 border-slate-700'
               }`}>
-                Emergency: {activeScenario === '5' ? 1 : 0}
+                {lang === 'ar' ? `طوارئ: ${activeScenario === '5' ? 1 : 0}` : `Emergency: ${activeScenario === '5' ? 1 : 0}`}
               </span>
             </div>
           </div>

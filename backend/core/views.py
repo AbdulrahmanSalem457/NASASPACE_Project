@@ -253,10 +253,10 @@ class MedicalAlertListView(APIView):
         if active_only in ['true', '1', True]:
             qs = qs.filter(is_active=True)
 
-        # Sort order: emergency first, then critical, warning, notice; newest first
+        # Sort order: active first, then newest timestamp first so current scenario alert is top!
         alerts = list(qs)
         severity_map = {'emergency': 4, 'critical': 3, 'warning': 2, 'notice': 1, 'normal': 0}
-        alerts.sort(key=lambda a: (severity_map.get(a.level, 0), a.timestamp), reverse=True)
+        alerts.sort(key=lambda a: (1 if a.is_active else 0, a.timestamp, severity_map.get(a.level, 0)), reverse=True)
 
         data = MedicalAlertSerializer(alerts, many=True).data
         return Response(data)
@@ -392,6 +392,9 @@ class ActivateScenarioView(APIView):
                 {"error": f"Scenario '{scenario_id}' not found. Valid IDs: 1, 2, 3, 4, 5."},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # Deactivate all previous active alerts so only the activated scenario's alert is active
+        MedicalAlert.objects.filter(is_active=True).update(is_active=False)
 
         return handler(request)
 

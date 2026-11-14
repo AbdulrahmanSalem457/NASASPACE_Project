@@ -317,10 +317,11 @@ export const AstroProvider = ({ children }) => {
         setAlerts([]);
         setSelectedAlert(null);
       } else {
-        await refreshAlerts();
         if (res.alert) {
+          setAlerts([res.alert]);
           setSelectedAlert(res.alert);
         }
+        await refreshAlerts();
       }
     } catch (e) {
       console.warn(`Backend sync for scenario ${scKey} failed (using local reference preset):`, e);

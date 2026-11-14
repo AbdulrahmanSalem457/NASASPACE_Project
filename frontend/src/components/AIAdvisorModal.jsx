@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   X, Brain, Sparkles, ShieldCheck, Activity, Send, 
   CheckCircle2, RefreshCw, AlertCircle, FileText 
@@ -7,23 +7,31 @@ import { useAstro } from '../context/AstroContext';
 import { apiClient } from '../api/client';
 
 export const AIAdvisorModal = ({ isOpen, onClose }) => {
-  const { lang, t, selectedAstronaut, activity } = useAstro();
+  const { lang, t, selectedAstronaut, activity, currentVitals } = useAstro();
   const [advice, setAdvice] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  if (!isOpen || !selectedAstronaut) return null;
-
-  const runAnalysis = async () => {
+  const runAnalysis = useCallback(async () => {
+    if (!selectedAstronaut) return;
     setLoading(true);
     try {
-      const res = await apiClient.getAiAdvice({
-        astronaut_id: selectedAstronaut.id,
+      const vitalsToSend = currentVitals || {
         heart_rate: selectedAstronaut.hr_mean,
         systolic_bp: selectedAstronaut.sys_bp_mean,
         diastolic_bp: selectedAstronaut.dia_bp_mean,
         spo2: selectedAstronaut.spo2_mean,
         respiratory_rate: selectedAstronaut.resp_rate_mean,
         body_temperature: selectedAstronaut.body_temp_mean,
+      };
+
+      const res = await apiClient.getAiAdvice({
+        astronaut_id: selectedAstronaut.id,
+        heart_rate: vitalsToSend.heart_rate,
+        systolic_bp: vitalsToSend.systolic_bp,
+        diastolic_bp: vitalsToSend.diastolic_bp,
+        spo2: vitalsToSend.spo2,
+        respiratory_rate: vitalsToSend.respiratory_rate,
+        body_temperature: vitalsToSend.body_temperature,
         activity: activity
       });
       setAdvice(res.clinical_guidance);
@@ -32,7 +40,15 @@ export const AIAdvisorModal = ({ isOpen, onClose }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedAstronaut, currentVitals, activity]);
+
+  useEffect(() => {
+    if (isOpen && selectedAstronaut) {
+      runAnalysis();
+    }
+  }, [isOpen, selectedAstronaut?.id, currentVitals?.heart_rate, currentVitals?.spo2, currentVitals?.body_temperature]);
+
+  if (!isOpen || !selectedAstronaut) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
@@ -46,7 +62,7 @@ export const AIAdvisorModal = ({ isOpen, onClose }) => {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono uppercase bg-blue-500/20 text-blue-300 border border-blue-500/40 px-2 py-0.5 rounded-full font-bold">
-                  NASA Clinical Decision Support
+                  {lang === 'ar' ? 'دعم القرار السريري الفضائي' : 'NASA Clinical Decision Support'}
                 </span>
               </div>
               <h2 className="text-base sm:text-lg font-bold font-mono text-white mt-0.5">
@@ -57,7 +73,8 @@ export const AIAdvisorModal = ({ isOpen, onClose }) => {
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+            title={lang === 'ar' ? 'إغلاق' : 'Close'}
           >
             <X className="w-5 h-5" />
           </button>
@@ -68,17 +85,21 @@ export const AIAdvisorModal = ({ isOpen, onClose }) => {
           {/* Astronaut Details Banner */}
           <div className="flex flex-wrap items-center justify-between bg-space-900 border border-slate-800 rounded-xl p-3.5 text-xs font-mono">
             <div>
-              <span className="text-slate-400">Target Astronaut: </span>
-              <strong className="text-white">{selectedAstronaut.id} — {lang === 'ar' ? selectedAstronaut.name_ar : selectedAstronaut.name}</strong>
-              <span className="text-slate-400 ml-2">({selectedAstronaut.role})</span>
+              <span className="text-slate-400">{lang === 'ar' ? 'رائد الفضاء المعني: ' : 'Target Astronaut: '}</span>
+              <strong className="text-white">
+                {selectedAstronaut.id} — {lang === 'ar' ? selectedAstronaut.name_ar : selectedAstronaut.name}
+              </strong>
+              <span className="text-slate-400 ml-2">
+                ({lang === 'ar' ? (selectedAstronaut.role_ar || selectedAstronaut.role) : selectedAstronaut.role})
+              </span>
             </div>
             <button
               onClick={runAnalysis}
               disabled={loading}
-              className="mt-2 sm:mt-0 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-blue-500/20"
+              className="mt-2 sm:mt-0 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-blue-500/20 cursor-pointer"
             >
               {loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-              <span>{loading ? 'Analyzing...' : (lang === 'ar' ? 'تحديث التحليل السريري' : 'Generate AI Clinical Synthesis')}</span>
+              <span>{loading ? (lang === 'ar' ? 'جاري التحليل...' : 'Analyzing...') : (lang === 'ar' ? 'تحديث التحليل السريري' : 'Generate AI Clinical Synthesis')}</span>
             </button>
           </div>
 
@@ -140,7 +161,7 @@ export const AIAdvisorModal = ({ isOpen, onClose }) => {
               </p>
               <button
                 onClick={runAnalysis}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold transition-all inline-flex items-center gap-2"
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold transition-all inline-flex items-center gap-2 cursor-pointer"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>{lang === 'ar' ? 'تشغيل التحليل السريري الآن' : 'Run Clinical Analysis Now'}</span>

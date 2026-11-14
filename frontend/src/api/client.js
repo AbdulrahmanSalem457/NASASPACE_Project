@@ -33,7 +33,7 @@ export const apiClient = {
     return await res.json();
   },
 
-  async getAlerts(astronautId = null, activeOnly = false) {
+  async getAlerts(astronautId = null, activeOnly = true) {
     let url = `${API_BASE}/alerts/?active_only=${activeOnly}`;
     if (astronautId) url += `&astronaut_id=${astronautId}`;
     const res = await fetch(url);

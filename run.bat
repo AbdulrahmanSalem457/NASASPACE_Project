@@ -21,7 +21,7 @@ start "AstroVitals-Backend" cmd /k "cd backend && venv\Scripts\activate.bat && p
 ping 127.0.0.1 -n 3 >nul
 
 echo Starting React Frontend at http://localhost:5173 ...
-start "AstroVitals-Frontend" cmd /k "cd frontend && npm run dev"
+start "AstroVitals-Frontend" cmd /k "cd frontend && call npm run dev"
 
 ping 127.0.0.1 -n 4 >nul
 

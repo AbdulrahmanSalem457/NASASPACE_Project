@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'drf_spectacular_sidecar',
     # Local
-    'core',
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [

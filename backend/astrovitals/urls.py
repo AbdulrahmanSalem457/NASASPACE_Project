@@ -1,11 +1,11 @@
 from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import RedirectView
+from django.urls import path, re_path, include
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
     SpectacularRedocView,
 )
+from .views import frontend_index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,8 +13,8 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    # Redirect root to swagger
-    path('', RedirectView.as_view(url='/swagger/', permanent=False)),
     # Core API endpoints
     path('api/', include('core.urls')),
+    # Frontend SPA (catch-all for frontend routes)
+    re_path(r'^(?!api|swagger|redoc|admin|static|assets).*$', frontend_index, name='frontend-index'),
 ]

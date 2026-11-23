@@ -1,4 +1,4 @@
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || '').replace(/\/+$/, '');
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || 'https://astrovitalsai.pythonanywhere.com').replace(/\/+$/, '');
 const API_BASE = `${BACKEND_URL}/api`;
 
 export const apiClient = {

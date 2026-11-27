@@ -4,15 +4,22 @@ from datetime import datetime, date, timedelta, timezone as dt_timezone
 from pathlib import Path
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from core.models import Astronaut, VitalReading, MedicalAlert, HistoricalRollup30D
-from core.protocols_data import ASTRONAUTS_SEED_DATA, STANDARD_CHECKLIST_TEMPLATE, PROTOCOLS_DEFINITIONS
+from core.models import (
+    Astronaut, VitalReading, MedicalAlert,
+    HistoricalRollup30D, MedicalKitItem, EVAPlan
+)
+from core.protocols_data import (
+    ASTRONAUTS_SEED_DATA, STANDARD_CHECKLIST_TEMPLATE,
+    PROTOCOLS_DEFINITIONS, MEDICAL_KIT_SEED_DATA
+)
 from core.alert_engine import calculate_z_score
 
+
 class Command(BaseCommand):
-    help = 'Seeds Astronaut profiles, ingests 24h CSV vitals, generates 30d history, and initializes alert states'
+    help = 'Seeds 6 Crew profiles, 24h CSV vitals, 30d history, Medical Kit (12 items), EVA plans, and initial alert states'
 
     def handle(self, *args, **options):
-        self.stdout.write("--> Seeding 3 Astronauts with Personal Baselines...")
+        self.stdout.write(f"--> Seeding {len(ASTRONAUTS_SEED_DATA)} Crew Members with Personal Baselines...")
 
         astronaut_objs = {}
         for data in ASTRONAUTS_SEED_DATA:
@@ -46,6 +53,8 @@ class Command(BaseCommand):
                     "ecg_qtc": sb["ecg_qtc"],
                     "hrv_rmssd": sb["hrv_rmssd"],
                     "daily_radiation": sb["daily_radiation"],
+                    "cumulative_radiation_msv": sb.get("cumulative_radiation_msv", 24.5),
+                    "mission_day": sb.get("mission_day", 45),
                     "sleep_duration": sb["sleep_duration"],
                     "exercise_hours": sb["exercise_hours"],
                 }
@@ -53,13 +62,12 @@ class Command(BaseCommand):
             astronaut_objs[ast.id] = ast
             self.stdout.write(f"   [+] Seeded {ast.id}: {ast.name} ({ast.role})")
 
-        # Ingest 24h CSV
+        # Regenerate / Ingest 24h CSV to ensure all 6 crew members have full 24h records
         base_dir = Path(__file__).resolve().parent.parent.parent.parent
         csv_path = base_dir / 'data' / 'astronaut_vitals_sample_24h.csv'
 
-        if not csv_path.exists():
-            from core.generate_sample_csv import generate_csv_data
-            generate_csv_data(csv_path)
+        from core.generate_sample_csv import generate_csv_data
+        generate_csv_data(csv_path)
 
         self.stdout.write(f"--> Ingesting 24h CSV from {csv_path}...")
         VitalReading.objects.filter(source='csv_24h').delete()
@@ -73,7 +81,6 @@ class Command(BaseCommand):
                     continue
 
                 ts = datetime.fromisoformat(row['timestamp'])
-                # Make timezone-aware
                 ts = timezone.make_aware(ts, dt_timezone.utc)
 
                 hr = float(row['heart_rate'])
@@ -92,7 +99,6 @@ class Command(BaseCommand):
 
                 max_z = max(abs(hr_z), abs(sys_z), abs(dia_z), abs(spo2_z), abs(rr_z), abs(temp_z))
 
-                # Secondary metrics variations
                 cabin_co2 = 3.2
                 hrv = ast.hrv_rmssd
                 if row['status'] in ['warning', 'critical']:
@@ -127,7 +133,7 @@ class Command(BaseCommand):
         self.stdout.write(f"   [+] Successfully imported {len(vitals_to_create)} vital readings.")
 
         # Generate 30-Day Historical Rollups
-        self.stdout.write("--> Generating 30-day historical rollup table per astronaut...")
+        self.stdout.write("--> Generating 30-day historical rollup table per crew member...")
         HistoricalRollup30D.objects.all().delete()
 
         today = date(2026, 1, 15)
@@ -137,7 +143,6 @@ class Command(BaseCommand):
             for day_offset in range(30, 0, -1):
                 day_date = today - timedelta(days=day_offset)
 
-                # Small day-to-day variance around personal baseline
                 daily_hr = round(ast.hr_mean + (day_offset % 3 - 1) * 0.8, 1)
                 daily_sys = round(ast.sys_bp_mean + (day_offset % 4 - 1.5) * 1.0, 1)
                 daily_dia = round(ast.dia_bp_mean + (day_offset % 3 - 1) * 0.7, 1)
@@ -145,10 +150,9 @@ class Command(BaseCommand):
                 daily_rr = round(ast.resp_rate_mean + (day_offset % 3 - 1) * 0.3, 1)
                 daily_temp = round(ast.body_temp_mean + (day_offset % 4 - 1.5) * 0.04, 2)
 
-                sleep_h = round(6.0 + (day_offset % 5) * 0.25, 1)
-                exercise_h = 2.5 if day_offset % 7 != 0 else 1.5 # Sunday light day
+                sleep_h = round(6.2 + (day_offset % 5) * 0.22, 1)
+                exercise_h = 2.5 if day_offset % 7 != 0 else 1.5
 
-                # Occasional alert count
                 alerts = 1 if (day_offset in [3, 11, 24]) else 0
                 crit_alerts = 1 if (day_offset == 11 and ast_id == 'AST-02') else 0
 
@@ -157,7 +161,7 @@ class Command(BaseCommand):
                     date=day_date,
                     avg_heart_rate=daily_hr,
                     min_heart_rate=round(daily_hr - 14.0, 1),
-                    max_heart_rate=round(daily_hr + 65.0, 1), # exercise peak
+                    max_heart_rate=round(daily_hr + 65.0, 1),
                     avg_systolic_bp=daily_sys,
                     avg_diastolic_bp=daily_dia,
                     avg_spo2=daily_spo2,
@@ -174,78 +178,62 @@ class Command(BaseCommand):
         HistoricalRollup30D.objects.bulk_create(history_objs)
         self.stdout.write(f"   [+] Created {len(history_objs)} daily historical records.")
 
-        # Seed Active Baseline Alerts with 8-Step Interactive Checklist
-        self.stdout.write("--> Initializing Active Medical Alerts...")
+        # Seed Smart Medical Kit (12 items)
+        self.stdout.write("--> Seeding Smart Medical Kit (12 items)...")
+        for item in MEDICAL_KIT_SEED_DATA:
+            MedicalKitItem.objects.update_or_create(
+                code=item["code"],
+                defaults={
+                    "name_en": item["name_en"],
+                    "name_ar": item["name_ar"],
+                    "category": item["category"],
+                    "category_ar": item["category_ar"],
+                    "quantity": item["quantity"],
+                    "max_quantity": item["max_quantity"],
+                    "unit": item["unit"],
+                    "unit_ar": item["unit_ar"],
+                    "expiry_date": date.fromisoformat(item["expiry_date"]),
+                    "location_bay": item["location_bay"],
+                    "related_protocols": item["related_protocols"],
+                    "usage_notes_en": item["usage_notes_en"],
+                    "usage_notes_ar": item["usage_notes_ar"],
+                }
+            )
+
+        # Seed Default EVA Plans if none exist
+        if not EVAPlan.objects.exists():
+            EVAPlan.objects.create(
+                astronaut=astronaut_objs["AST-01"],
+                title="ISS Truss Thermal Radiator Inspection",
+                title_ar="فحص المبرد الحراري على الهيكل الخارجي للمحطة",
+                duration_hours=5.0,
+                oxygen_reserve_pct=98.0,
+                co2_scrubber_pct=96.0,
+                suit_pressure_psi=4.3,
+                radiation_forecast_msv=0.55,
+                readiness_decision="GO",
+                risk_score_snapshot=6,
+                decision_reasons=[
+                    {"en": "Nominal baseline telemetry & suit reserves >= 95%", "ar": "المؤشرات مستقرة واحتياطيات البدلة >= 95%"}
+                ]
+            )
+            EVAPlan.objects.create(
+                astronaut=astronaut_objs["AST-04"],
+                title="Solar Array Dosimeter Calibration",
+                title_ar="معايرة أجهزة قياس الإشعاع على الألواح الشمسية",
+                duration_hours=4.0,
+                oxygen_reserve_pct=95.0,
+                co2_scrubber_pct=92.0,
+                suit_pressure_psi=4.3,
+                radiation_forecast_msv=0.60,
+                readiness_decision="GO",
+                risk_score_snapshot=8,
+                decision_reasons=[
+                    {"en": "Radiation forecast nominal (0.60 mSv/day)", "ar": "التوقع الإشعاعي طبيعي (0.60 ملي سيفرت/يوم)"}
+                ]
+            )
+
+        # Clear stale alerts on clean seed; scenarios or sliders trigger live alerts
         MedicalAlert.objects.all().delete()
 
-        # Alert 1 for AST-02: Tachycardia + Hypoxia Event (from CSV at 14:20)
-        ast2 = astronaut_objs["AST-02"]
-        chk1 = copy.deepcopy(STANDARD_CHECKLIST_TEMPLATE)
-        chk1[0]["completed"] = True
-        chk1[0]["completed_at"] = "14:04:12 UTC"
-        chk1[1]["completed"] = True
-        chk1[1]["completed_at"] = "14:06:45 UTC"
-        chk1[1]["note"] = "Sensor inspected. No mechanical error. Astronaut reports mild air hunger & palpitations."
-
-        MedicalAlert.objects.create(
-            astronaut=ast2,
-            timestamp=timezone.now() - timedelta(minutes=18),
-            level='critical',
-            primary_metric='multi_signal',
-            title_en="Compound Tachycardia + Hypoxia Crisis",
-            title_ar="أزمة مركبة: تسارع ضربات القلب ونقص الأكسجين",
-            summary_en="Concurrent acute rise in Heart Rate (+45 bpm over baseline to 131 bpm) with SpO2 desaturation (down to 90.0%) and elevated respiratory rate (27 bpm) during light activity.",
-            summary_ar="ارتفاع حاد متزامن في نبضات القلب (+45 نبضة فوق الأساس ليصل إلى 131) مع هبوط تشبع الأكسجين (إلى 90.0%) وزيادة معدل التنفس (27 نفساً) أثناء النشاط الخفيف.",
-            probable_cause_en="Microgravity fluid shift compounding transient ventilation-perfusion mismatch or localized cabin air stagnation.",
-            probable_cause_ar="انتقال السوائل نحو الرأس مترافقاً مع اختلال عابر في التروية الرئوية أو ركود موضعي لهواء الكابينة.",
-            current_reading_value="HR: 131 bpm, SpO2: 90.0%, RR: 27 bpm",
-            baseline_reference="Mean HR: 68.0 bpm, SpO2: 97.0%, RR: 15.0 bpm",
-            normal_limit_reference="Space Normal: HR 50-90, SpO2 95-100%, RR 12-20",
-            z_score=3.85,
-            protocol_code="PROT-01",
-            protocol_title_en="Tachycardia & Hypoxia Dual Protocol",
-            protocol_title_ar="بروتوكول تسارع القلب ونقص الأكسجين المزدوج",
-            is_active=True,
-            elapsed_seconds=1080, # 18 mins
-            checklist_steps=chk1,
-            action_logs=[
-                {"timestamp": "14:04:12", "action_en": "System triggered Rule 4 Multi-Signal Compound Escalation -> Critical Red.", "action_ar": "تفعيل القاعدة 4 للتصعيد المركب متعدد الإشارات -> حالة حرجة حمراء."},
-                {"timestamp": "14:06:45", "action_en": "CMO Dr. Sara verified biosensors. Palpitations confirmed.", "action_ar": "تحقق مسؤول الطاقم الطبي د. سارة من المستشعرات وتأكيد خفقان القلب."},
-                {"timestamp": "14:08:30", "action_en": "Astronaut secured in seated restraint; administered medical O2 mask at 4 L/min.", "action_ar": "تثبيت الرائد في وضعية الجلوس وارتداء قناع أكسجين طبي بمعدل 4 لتر/دقيقة."}
-            ]
-        )
-
-        # Alert 2 for AST-03: Gradual Hyperthermia Event (from CSV at 21:52)
-        ast3 = astronaut_objs["AST-03"]
-        chk2 = copy.deepcopy(STANDARD_CHECKLIST_TEMPLATE)
-        chk2[0]["completed"] = True
-        chk2[0]["completed_at"] = "21:52:00 UTC"
-
-        MedicalAlert.objects.create(
-            astronaut=ast3,
-            timestamp=timezone.now() - timedelta(minutes=4),
-            level='critical',
-            primary_metric='body_temperature',
-            title_en="Critical Core Hyperthermia ('Space Fever')",
-            title_ar="ارتفاع حرج في حرارة الجسم ('حمى الفضاء')",
-            summary_en="Core temperature elevated to 38.33 °C (deviation Z = +12.75 SD from personal baseline mean of 36.8 °C) post-exercise with inadequate cooling.",
-            summary_ar="ارتفعت حرارة الجسم المركزية إلى 38.33 °م (انحراف Z = +12.75 عن خط الأساس 36.8 °م) بعد التمرين مع تعطل التبريد التبخيري.",
-            probable_cause_en="Space Fever: Microgravity liquid sweat film insulating skin, completely impairing evaporative heat dissipation.",
-            probable_cause_ar="حمى الفضاء: احتباس طبقة العرق السائلة العازلة على الجلد مما عطل فقدان الحرارة التبخيري تماماً.",
-            current_reading_value="38.33 °C",
-            baseline_reference="Mean: 36.80 °C (SD: 0.12)",
-            normal_limit_reference="Space Normal: 36.1 - 37.5 °C (Critical > 38.30 °C)",
-            z_score=12.75,
-            protocol_code="PROT-07",
-            protocol_title_en="Hyperthermia Active Cooling Protocol",
-            protocol_title_ar="بروتوكول التبريد النشط لارتفاع الحرارة",
-            is_active=True,
-            elapsed_seconds=240, # 4 mins
-            checklist_steps=chk2,
-            action_logs=[
-                {"timestamp": "21:52:00", "action_en": "Core temperature crossed 38.30 °C critical threshold.", "action_ar": "تجاوزت حرارة الجسم المركزية الحد الحرج 38.30 °م."},
-                {"timestamp": "21:53:15", "action_en": "Active evaporative cooling towels and direct personal ventilation deployed.", "action_ar": "تطبيق مناشف التبريد التبخيري وتوجيه مروحة التهوية الشخصية مباشرة."}
-            ]
-        )
-
-        self.stdout.write(self.style.SUCCESS("=== AstroVitals AI Database Successfully Initialized & Seeded! ==="))
+        self.stdout.write(self.style.SUCCESS("=== AstroVitals AI Database Successfully Initialized & Seeded (6 Crew, 12 Med Kit Items)! ==="))

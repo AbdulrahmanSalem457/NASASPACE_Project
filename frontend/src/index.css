@@ -34,3 +34,23 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* Print / Save PDF Stylesheet */
+@media print {
+  header, footer, .no-print {
+    display: none !important;
+  }
+  body {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+  }
+  .print-card {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    border-color: #CBD5E1 !important;
+    box-shadow: none !important;
+  }
+  .print-card * {
+    color: #0F172A !important;
+  }
+}

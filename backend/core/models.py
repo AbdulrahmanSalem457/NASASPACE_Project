@@ -3,8 +3,9 @@ from django.db import models
 from django.utils import timezone
 from .protocols_data import STANDARD_CHECKLIST_TEMPLATE
 
+
 class Astronaut(models.Model):
-    id = models.CharField(max_length=20, primary_key=True) # e.g. AST-01
+    id = models.CharField(max_length=20, primary_key=True)  # e.g. AST-01
     name = models.CharField(max_length=100)
     name_ar = models.CharField(max_length=100)
     age = models.IntegerField()
@@ -33,17 +34,19 @@ class Astronaut(models.Model):
     body_temp_mean = models.FloatField(default=36.8)
     body_temp_sd = models.FloatField(default=0.12)
 
-    # Secondary Indicators
-    ecg_pr = models.IntegerField(default=155) # ms
-    ecg_qrs = models.IntegerField(default=85) # ms
-    ecg_qtc = models.IntegerField(default=415) # ms
+    # Secondary Indicators & Radiation Budget
+    ecg_pr = models.IntegerField(default=155)  # ms
+    ecg_qrs = models.IntegerField(default=85)  # ms
+    ecg_qtc = models.IntegerField(default=415)  # ms
     ecg_rhythm = models.CharField(max_length=50, default='Normal Sinus')
-    hrv_rmssd = models.FloatField(default=52.0) # ms
-    daily_radiation = models.FloatField(default=0.55) # mSv/day
-    sleep_duration = models.FloatField(default=6.8) # hours
-    exercise_hours = models.FloatField(default=2.5) # hours/day
-    cabin_co2 = models.FloatField(default=3.2) # mmHg
-    cabin_pressure = models.FloatField(default=14.7) # psi
+    hrv_rmssd = models.FloatField(default=52.0)  # ms
+    daily_radiation = models.FloatField(default=0.55)  # mSv/day
+    cumulative_radiation_msv = models.FloatField(default=24.8)  # Total mission cumulative mSv
+    mission_day = models.IntegerField(default=45)
+    sleep_duration = models.FloatField(default=6.8)  # hours
+    exercise_hours = models.FloatField(default=2.5)  # hours/day
+    cabin_co2 = models.FloatField(default=3.2)  # mmHg
+    cabin_pressure = models.FloatField(default=14.7)  # psi
 
     def get_baselines_dict(self):
         return {
@@ -71,7 +74,7 @@ class VitalReading(models.Model):
     respiratory_rate = models.FloatField()
     body_temperature = models.FloatField()
 
-    status = models.CharField(max_length=20, default='normal') # normal, notice, warning, critical, emergency
+    status = models.CharField(max_length=20, default='normal')  # normal, notice, warning, critical, emergency
 
     # Z-scores vs Personal Baseline
     hr_z_score = models.FloatField(default=0.0)
@@ -89,9 +92,11 @@ class VitalReading(models.Model):
     ecg_rhythm = models.CharField(max_length=50, default='Normal Sinus')
     hrv_rmssd = models.FloatField(default=50.0)
     cabin_co2 = models.FloatField(default=3.2)
+    cabin_pressure = models.FloatField(default=14.7)
+    sleep_duration = models.FloatField(default=6.8)
     radiation_rate = models.FloatField(default=0.55)
 
-    source = models.CharField(max_length=50, default='live') # csv_24h, live, scenario
+    source = models.CharField(max_length=50, default='live')  # csv_24h, live, scenario
 
     class Meta:
         ordering = ['-timestamp']
@@ -179,3 +184,54 @@ class HistoricalRollup30D(models.Model):
 
     def __str__(self):
         return f"{self.astronaut_id} Historical {self.date}"
+
+
+class MedicalKitItem(models.Model):
+    code = models.CharField(max_length=30, unique=True)
+    name_en = models.CharField(max_length=150)
+    name_ar = models.CharField(max_length=150)
+    category = models.CharField(max_length=80)
+    category_ar = models.CharField(max_length=80)
+    quantity = models.IntegerField(default=1)
+    max_quantity = models.IntegerField(default=5)
+    unit = models.CharField(max_length=40, default='units')
+    unit_ar = models.CharField(max_length=40, default='وحدة')
+    expiry_date = models.DateField()
+    location_bay = models.CharField(max_length=80, default='Bay A-1 (Medical Locker)')
+    related_protocols = models.JSONField(default=list)
+    usage_notes_en = models.TextField(blank=True, default='')
+    usage_notes_ar = models.TextField(blank=True, default='')
+
+    class Meta:
+        ordering = ['code']
+
+    def __str__(self):
+        return f"{self.code} - {self.name_en} ({self.quantity}/{self.max_quantity})"
+
+
+class EVAPlan(models.Model):
+    DECISION_CHOICES = [
+        ('GO', 'GO'),
+        ('GO_WITH_CAUTION', 'GO WITH CAUTION'),
+        ('HOLD', 'HOLD'),
+    ]
+
+    astronaut = models.ForeignKey(Astronaut, on_delete=models.CASCADE, related_name='eva_plans')
+    title = models.CharField(max_length=200)
+    title_ar = models.CharField(max_length=200, blank=True, default='')
+    scheduled_start = models.DateTimeField(default=timezone.now)
+    duration_hours = models.FloatField(default=4.5)
+    oxygen_reserve_pct = models.FloatField(default=98.0)
+    co2_scrubber_pct = models.FloatField(default=95.0)
+    suit_pressure_psi = models.FloatField(default=4.3)
+    radiation_forecast_msv = models.FloatField(default=0.6)
+    readiness_decision = models.CharField(max_length=30, choices=DECISION_CHOICES, default='GO')
+    risk_score_snapshot = models.IntegerField(default=10)
+    decision_reasons = models.JSONField(default=list)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"EVA [{self.readiness_decision}] {self.astronaut_id} - {self.title}"

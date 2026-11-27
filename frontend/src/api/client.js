@@ -85,10 +85,82 @@ export const apiClient = {
     return await res.json();
   },
 
+  async askIncidentAssistant(payload) {
+    const res = await fetch(`${API_BASE}/incident-assistant/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  },
+
+  async getReadiness(astronautId = null) {
+    const url = astronautId ? `${API_BASE}/readiness/?astronaut_id=${astronautId}` : `${API_BASE}/readiness/`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  },
+
+  async getEvaPlans() {
+    const res = await fetch(`${API_BASE}/eva-plans/`);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  },
+
+  async createEvaPlan(payload) {
+    const res = await fetch(`${API_BASE}/eva-plans/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  },
+
+  async deleteEvaPlan(planId) {
+    const res = await fetch(`${API_BASE}/eva-plans/${planId}/`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return true;
+  },
+
+  async getMedicalKit(protocolCode = null) {
+    const url = protocolCode ? `${API_BASE}/medical-kit/?protocol_code=${protocolCode}` : `${API_BASE}/medical-kit/`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  },
+
+  async useMedicalKitItem(itemId, amount = 1, restock = false) {
+    const res = await fetch(`${API_BASE}/medical-kit/${itemId}/use/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount, restock })
+    });
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  },
+
+  async getRadiationOverview() {
+    const res = await fetch(`${API_BASE}/radiation/`);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  },
+
   async getReports(astronautId, period = 'daily') {
     const res = await fetch(`${API_BASE}/reports/${astronautId}/?period=${period}`);
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     return await res.json();
+  },
+
+  async getSbarReport(astronautId) {
+    const res = await fetch(`${API_BASE}/reports/${astronautId}/sbar/`);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  },
+
+  getExportCsvUrl(astronautId) {
+    return `${API_BASE}/reports/${astronautId}/export-csv/`;
   },
 
   async uploadCsv(file) {

@@ -50,8 +50,8 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
       id: "1",
       title_ar: "1: تسارع ضربات القلب ونقص الأكسجين",
       title_en: "1: Tachycardia + Hypoxia Crisis",
-      desc_ar: "المهندس عمر: نبض 131، أكسجين 90%، تنفس 27",
-      desc_en: "Eng. Omar: HR 131 bpm, SpO2 90.0%, RR 27 bpm",
+      desc_ar: "نبض 131، أكسجين 90%، تنفس 27 (تصعيد مركب PROT-01)",
+      desc_en: "HR 131 bpm, SpO2 90.0%, RR 27 bpm (PROT-01)",
       icon: Activity,
       badge_ar: "حرج أحمر",
       badge_en: "Critical Red",
@@ -61,9 +61,9 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
     {
       id: "2",
       title_ar: "2: حمى الفضاء وارتفاع الحرارة",
-      title_en: "2: Space Fever (+1.4°C)",
-      desc_ar: "د. سارة: حرارة 38.33°م (احتباس العرق وانعدام التبريد)",
-      desc_en: "Dr. Sara: Temp 38.33°C (Sweat film insulation)",
+      title_en: "2: Space Fever (+1.5°C)",
+      desc_ar: "حرارة مركزية 38.33°م (احتباس العرق وانعدام التبريد)",
+      desc_en: "Core Temp 38.33°C (Sweat film insulation)",
       icon: Flame,
       badge_ar: "حرج أحمر",
       badge_en: "Critical Red",
@@ -74,8 +74,8 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
       id: "3",
       title_ar: "3: حرمان النوم والإجهاد العصبي",
       title_en: "3: Cumulative Sleep Deprivation",
-      desc_ar: "القائدة ليلى: نوم 4.2 ساعة وهبوط تقلب ضربات القلب",
-      desc_en: "Cmdr. Layla: Sleep 4.2h, Low HRV (22ms)",
+      desc_ar: "نوم 4.2 ساعة وهبوط تقلب ضربات القلب (HRV 22ms)",
+      desc_en: "Sleep 4.2h, Low HRV (22ms)",
       icon: Moon,
       badge_ar: "تحذير أصفر",
       badge_en: "Warning Amber",
@@ -300,6 +300,7 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
                     <option value="light">نشاط خفيف وصيانة</option>
                     <option value="sleep">نوم واسترجاع حيوي</option>
                     <option value="exercise">تمارين رياضية إجبارية</option>
+                    <option value="eva">مهمة سير فضائي (EVA)</option>
                   </>
                 ) : (
                   <>
@@ -307,6 +308,7 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
                     <option value="light">Light Work & Maintenance</option>
                     <option value="sleep">Sleep & Recovery</option>
                     <option value="exercise">Mandatory Exercise Countermeasure</option>
+                    <option value="eva">Spacewalk Extravehicular Activity (EVA)</option>
                   </>
                 )}
               </select>

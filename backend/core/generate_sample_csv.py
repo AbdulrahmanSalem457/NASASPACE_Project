@@ -16,15 +16,15 @@ def generate_csv_data(output_path=None):
     astronauts = [
         {
             "id": "AST-01",
-            "name": "Cmdr. Layla",
+            "name": "Eng. Eslam Abuelela",
             "baselines": {
-                "heart_rate": 62.0, "systolic_bp": 108.0, "diastolic_bp": 68.0,
+                "heart_rate": 62.0, "systolic_bp": 112.0, "diastolic_bp": 70.0,
                 "spo2": 97.5, "respiratory_rate": 14.0, "body_temperature": 36.8
             }
         },
         {
             "id": "AST-02",
-            "name": "Eng. Omar",
+            "name": "Eng. Saudi",
             "baselines": {
                 "heart_rate": 68.0, "systolic_bp": 116.0, "diastolic_bp": 72.0,
                 "spo2": 97.0, "respiratory_rate": 15.0, "body_temperature": 36.9
@@ -32,10 +32,34 @@ def generate_csv_data(output_path=None):
         },
         {
             "id": "AST-03",
-            "name": "Dr. Sara",
+            "name": "Eng. Sherif",
             "baselines": {
                 "heart_rate": 64.0, "systolic_bp": 110.0, "diastolic_bp": 70.0,
                 "spo2": 98.0, "respiratory_rate": 13.0, "body_temperature": 36.8
+            }
+        },
+        {
+            "id": "AST-04",
+            "name": "PHY. Nijo",
+            "baselines": {
+                "heart_rate": 65.0, "systolic_bp": 108.0, "diastolic_bp": 68.0,
+                "spo2": 97.8, "respiratory_rate": 14.0, "body_temperature": 36.7
+            }
+        },
+        {
+            "id": "AST-05",
+            "name": "Eng. Hana",
+            "baselines": {
+                "heart_rate": 66.0, "systolic_bp": 109.0, "diastolic_bp": 69.0,
+                "spo2": 97.6, "respiratory_rate": 14.0, "body_temperature": 36.8
+            }
+        },
+        {
+            "id": "AST-06",
+            "name": "Eng. Ahmed Aboelela",
+            "baselines": {
+                "heart_rate": 67.0, "systolic_bp": 115.0, "diastolic_bp": 71.0,
+                "spo2": 97.4, "respiratory_rate": 15.0, "body_temperature": 36.85
             }
         }
     ]

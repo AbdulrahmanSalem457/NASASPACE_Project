@@ -438,18 +438,18 @@ PROTOCOLS_DEFINITIONS = [
 ASTRONAUTS_SEED_DATA = [
     {
         "id": "AST-01",
-        "name": "Cmdr. Layla",
-        "name_ar": "القائدة ليلى",
-        "age": 42,
-        "gender": "Female",
+        "name": "Eng. Eslam Abuelela",
+        "name_ar": "Eng. إسلام أبوالعلا",
+        "age": 34,
+        "gender": "Male",
         "role": "Mission Commander",
         "role_ar": "قائد المهمة",
         "current_activity": "rest",
         "mission_location": "ISS",
         "baselines": {
             "heart_rate": {"mean": 62.0, "sd": 4.0, "unit": "bpm"},
-            "systolic_bp": {"mean": 108.0, "sd": 5.0, "unit": "mmHg"},
-            "diastolic_bp": {"mean": 68.0, "sd": 4.0, "unit": "mmHg"},
+            "systolic_bp": {"mean": 112.0, "sd": 5.0, "unit": "mmHg"},
+            "diastolic_bp": {"mean": 70.0, "sd": 4.0, "unit": "mmHg"},
             "spo2": {"mean": 97.5, "sd": 0.6, "unit": "%"},
             "respiratory_rate": {"mean": 14.0, "sd": 1.0, "unit": "breaths/min"},
             "body_temperature": {"mean": 36.8, "sd": 0.12, "unit": "°C"}
@@ -460,15 +460,17 @@ ASTRONAUTS_SEED_DATA = [
             "ecg_qtc": 415,
             "hrv_rmssd": 52.0,
             "daily_radiation": 0.55,
+            "cumulative_radiation_msv": 24.8,
+            "mission_day": 45,
             "sleep_duration": 6.8,
             "exercise_hours": 2.5
         }
     },
     {
         "id": "AST-02",
-        "name": "Eng. Omar",
-        "name_ar": "المهندس عمر",
-        "age": 38,
+        "name": "Eng. Saudi",
+        "name_ar": "Eng. سعودي",
+        "age": 32,
         "gender": "Male",
         "role": "Flight Engineer & Systems Specialist",
         "role_ar": "مهندس الرحلة وخبير الأنظمة",
@@ -488,18 +490,20 @@ ASTRONAUTS_SEED_DATA = [
             "ecg_qtc": 420,
             "hrv_rmssd": 48.0,
             "daily_radiation": 0.58,
-            "sleep_duration": 6.2,
+            "cumulative_radiation_msv": 26.1,
+            "mission_day": 45,
+            "sleep_duration": 6.5,
             "exercise_hours": 2.4
         }
     },
     {
         "id": "AST-03",
-        "name": "Dr. Sara",
-        "name_ar": "د. سارة",
-        "age": 45,
-        "gender": "Female",
-        "role": "Chief Medical Officer (CMO)",
-        "role_ar": "مسؤول الطاقم الطبي",
+        "name": "Eng. Sherif",
+        "name_ar": "Eng. شريف",
+        "age": 33,
+        "gender": "Male",
+        "role": "Chief Medical Officer (CMO) & Bio-Systems Engineer",
+        "role_ar": "مسؤول الطاقم الطبي (CMO) وهندسة الأنظمة الحيوية",
         "current_activity": "rest",
         "mission_location": "ISS",
         "baselines": {
@@ -516,8 +520,100 @@ ASTRONAUTS_SEED_DATA = [
             "ecg_qtc": 410,
             "hrv_rmssd": 58.0,
             "daily_radiation": 0.52,
+            "cumulative_radiation_msv": 23.4,
+            "mission_day": 45,
             "sleep_duration": 7.0,
             "exercise_hours": 2.6
+        }
+    },
+    {
+        "id": "AST-04",
+        "name": "PHY. Nijo",
+        "name_ar": "PHY. نيشو",
+        "age": 30,
+        "gender": "Female",
+        "role": "Mission Physicist & Radiation Safety Officer",
+        "role_ar": "فيزيائية المهمة ومسؤولة السلامة الإشعاعية",
+        "current_activity": "light",
+        "mission_location": "ISS",
+        "baselines": {
+            "heart_rate": {"mean": 65.0, "sd": 4.0, "unit": "bpm"},
+            "systolic_bp": {"mean": 108.0, "sd": 5.0, "unit": "mmHg"},
+            "diastolic_bp": {"mean": 68.0, "sd": 4.0, "unit": "mmHg"},
+            "spo2": {"mean": 97.8, "sd": 0.5, "unit": "%"},
+            "respiratory_rate": {"mean": 14.0, "sd": 1.0, "unit": "breaths/min"},
+            "body_temperature": {"mean": 36.7, "sd": 0.12, "unit": "°C"}
+        },
+        "secondary_baselines": {
+            "ecg_pr": 152,
+            "ecg_qrs": 84,
+            "ecg_qtc": 412,
+            "hrv_rmssd": 55.0,
+            "daily_radiation": 0.54,
+            "cumulative_radiation_msv": 24.3,
+            "mission_day": 45,
+            "sleep_duration": 7.1,
+            "exercise_hours": 2.5
+        }
+    },
+    {
+        "id": "AST-05",
+        "name": "Eng. Hana",
+        "name_ar": "Eng. هنا",
+        "age": 29,
+        "gender": "Female",
+        "role": "Computer Systems Engineer",
+        "role_ar": "مهندسة أنظمة الحاسبات",
+        "current_activity": "rest",
+        "mission_location": "ISS",
+        "baselines": {
+            "heart_rate": {"mean": 66.0, "sd": 4.0, "unit": "bpm"},
+            "systolic_bp": {"mean": 109.0, "sd": 5.0, "unit": "mmHg"},
+            "diastolic_bp": {"mean": 69.0, "sd": 4.0, "unit": "mmHg"},
+            "spo2": {"mean": 97.6, "sd": 0.5, "unit": "%"},
+            "respiratory_rate": {"mean": 14.0, "sd": 1.0, "unit": "breaths/min"},
+            "body_temperature": {"mean": 36.8, "sd": 0.12, "unit": "°C"}
+        },
+        "secondary_baselines": {
+            "ecg_pr": 154,
+            "ecg_qrs": 84,
+            "ecg_qtc": 414,
+            "hrv_rmssd": 54.0,
+            "daily_radiation": 0.53,
+            "cumulative_radiation_msv": 23.9,
+            "mission_day": 45,
+            "sleep_duration": 6.9,
+            "exercise_hours": 2.5
+        }
+    },
+    {
+        "id": "AST-06",
+        "name": "Eng. Ahmed Aboelela",
+        "name_ar": "Eng. أحمد أبوالعلا",
+        "age": 31,
+        "gender": "Male",
+        "role": "Computer Systems Engineer",
+        "role_ar": "مهندس أنظمة الحاسبات",
+        "current_activity": "light",
+        "mission_location": "ISS",
+        "baselines": {
+            "heart_rate": {"mean": 67.0, "sd": 4.0, "unit": "bpm"},
+            "systolic_bp": {"mean": 115.0, "sd": 5.0, "unit": "mmHg"},
+            "diastolic_bp": {"mean": 71.0, "sd": 4.0, "unit": "mmHg"},
+            "spo2": {"mean": 97.4, "sd": 0.6, "unit": "%"},
+            "respiratory_rate": {"mean": 15.0, "sd": 1.0, "unit": "breaths/min"},
+            "body_temperature": {"mean": 36.85, "sd": 0.12, "unit": "°C"}
+        },
+        "secondary_baselines": {
+            "ecg_pr": 158,
+            "ecg_qrs": 88,
+            "ecg_qtc": 418,
+            "hrv_rmssd": 50.0,
+            "daily_radiation": 0.56,
+            "cumulative_radiation_msv": 25.2,
+            "mission_day": 45,
+            "sleep_duration": 6.7,
+            "exercise_hours": 2.5
         }
     }
 ]
@@ -555,6 +651,14 @@ ACTIVITY_RANGES = {
         "spo2": {"normal": [94.0, 100.0], "warning_low": [90.0, 93.9], "warning_high": None, "crit_low": 90.0, "crit_high": None},
         "respiratory_rate": {"normal": [18, 35], "warning_low": [14, 17], "warning_high": [36, 40], "crit_low": 14, "crit_high": 40},
         "body_temperature": {"normal": [37.0, 38.3], "warning_low": [36.5, 36.99], "warning_high": [38.31, 39.0], "crit_low": 36.5, "crit_high": 39.0}
+    },
+    "eva": {
+        "heart_rate": {"normal": [85, 145], "warning_low": [65, 84], "warning_high": [146, 165], "crit_low": 65, "crit_high": 165},
+        "systolic_bp": {"normal": [110, 160], "warning_low": [95, 109], "warning_high": [161, 175], "crit_low": 95, "crit_high": 175},
+        "diastolic_bp": {"normal": [60, 88], "warning_low": [50, 59], "warning_high": [89, 98], "crit_low": 50, "crit_high": 98},
+        "spo2": {"normal": [94.0, 100.0], "warning_low": [90.0, 93.9], "warning_high": None, "crit_low": 90.0, "crit_high": None},
+        "respiratory_rate": {"normal": [16, 30], "warning_low": [12, 15], "warning_high": [31, 36], "crit_low": 12, "crit_high": 36},
+        "body_temperature": {"normal": [36.5, 38.0], "warning_low": [36.0, 36.49], "warning_high": [38.01, 38.7], "crit_low": 36.0, "crit_high": 38.7}
     }
 }
 
@@ -563,7 +667,8 @@ ACTIVITY_GENERATOR_MEANS = {
     "rest": {"heart_rate": (66.0, 3.0), "systolic_bp": (112.0, 4.0), "diastolic_bp": (70.0, 3.0), "spo2": (97.5, 0.5), "respiratory_rate": (14.0, 1.0), "body_temperature": (36.9, 0.1)},
     "sleep": {"heart_rate": (54.0, 3.0), "systolic_bp": (100.0, 4.0), "diastolic_bp": (60.0, 3.0), "spo2": (96.5, 0.5), "respiratory_rate": (12.0, 1.0), "body_temperature": (36.5, 0.1)},
     "light": {"heart_rate": (80.0, 3.0), "systolic_bp": (115.0, 4.0), "diastolic_bp": (72.0, 3.0), "spo2": (97.5, 0.5), "respiratory_rate": (15.0, 1.0), "body_temperature": (36.9, 0.1)},
-    "exercise": {"heart_rate": (135.0, 3.0), "systolic_bp": (145.0, 4.0), "diastolic_bp": (78.0, 3.0), "spo2": (97.0, 0.5), "respiratory_rate": (24.0, 1.0), "body_temperature": (37.8, 0.1)}
+    "exercise": {"heart_rate": (135.0, 3.0), "systolic_bp": (145.0, 4.0), "diastolic_bp": (78.0, 3.0), "spo2": (97.0, 0.5), "respiratory_rate": (24.0, 1.0), "body_temperature": (37.8, 0.1)},
+    "eva": {"heart_rate": (115.0, 4.0), "systolic_bp": (132.0, 4.0), "diastolic_bp": (76.0, 3.0), "spo2": (97.0, 0.5), "respiratory_rate": (21.0, 1.0), "body_temperature": (37.4, 0.1)}
 }
 
 # Mission Location Configuration
@@ -649,5 +754,429 @@ CREW_RESPONSIBILITY_MATRIX = [
         "title_ar": "قائد المهمة",
         "responsibilities_en": "Authorizes timeline modifications, EVA aborts, re-allocates crew duties, and authorizes emergency abort/return.",
         "responsibilities_ar": "المصادقة على تعديل خطط المهمة، إلغاء السير الفضائي، إعادة توزيع المهام، وإصدار قرار الإخلاء والعودة."
+    }
+]
+
+
+RADIATION_LIMITS = {
+    "daily_nominal_max_msv": 0.8,
+    "daily_warning_msv": 1.2,
+    "daily_critical_spe_msv": 2.5,
+    "mission_30d_limit_msv": 250.0,
+    "annual_limit_msv": 500.0,
+    "career_limit_msv": 600.0,
+}
+
+MEDICAL_KIT_SEED_DATA = [
+    {
+        "code": "KIT-01",
+        "name_en": "Emergency Medical O2 Mask & Regulator",
+        "name_ar": "قناع ومنظم الأكسجين الطبي للطوارئ",
+        "category": "Respiratory",
+        "category_ar": "الجهاز التنفسي",
+        "quantity": 4,
+        "max_quantity": 4,
+        "unit": "kits",
+        "unit_ar": "طقم",
+        "expiry_date": "2028-06-30",
+        "location_bay": "Bay A-1 (Airlock & Med Rack)",
+        "related_protocols": ["PROT-05", "PROT-06", "PROT-08", "PROT-10"],
+        "usage_notes_en": "Deliver 4-6 L/min O2 (or 100% O2 BVM during arrest). Verify tank pressure before sealing.",
+        "usage_notes_ar": "ضخ 4-6 لتر/دقيقة أكسجين (أو 100% أثناء الإنعاش). تأكد من ضغط الأسطوانة وإحكام القناع."
+    },
+    {
+        "code": "KIT-02",
+        "name_en": "Portable Automated External Defibrillator (AED)",
+        "name_ar": "جهاز الصدمات الكهربائية الآلي المحمول (AED)",
+        "category": "Cardiac Life Support",
+        "category_ar": "دعم القلب الحرج",
+        "quantity": 2,
+        "max_quantity": 2,
+        "unit": "units",
+        "unit_ar": "جهاز",
+        "expiry_date": "2027-12-31",
+        "location_bay": "Bay A-1 (Emergency Wall)",
+        "related_protocols": ["PROT-01", "PROT-02", "PROT-09", "PROT-10"],
+        "usage_notes_en": "Deploy only after restraining patient on CMRS board. Clear all crew before shock.",
+        "usage_notes_ar": "يُستخدم بعد تثبيت الرائد على لوح CMRS. تأكد من ابتعاد الطاقم قبل الصدمة."
+    },
+    {
+        "code": "KIT-03",
+        "name_en": "Crew Medical Restraint System (CMRS)",
+        "name_ar": "لوح وأحزمة التثبيت الطبي لانعدام الجاذبية (CMRS)",
+        "category": "Microgravity Stabilization",
+        "category_ar": "التثبيت الفضائي",
+        "quantity": 2,
+        "max_quantity": 2,
+        "unit": "boards",
+        "unit_ar": "لوح",
+        "expiry_date": "2030-01-01",
+        "location_bay": "Bay A-2 (Med Bay Bulkhead)",
+        "related_protocols": ["PROT-01", "PROT-02", "PROT-04", "PROT-10", "PROT-14"],
+        "usage_notes_en": "Mandatory restraint harness for both patient and rescuer during zero-G CPR or treatment.",
+        "usage_notes_ar": "إلزامي لتثبيت الرائد والمسعف معاً لمنع الطفو وضمان كفاءة الإنعاش."
+    },
+    {
+        "code": "KIT-04",
+        "name_en": "12-Lead Wireless ECG & Electrolyte Analyzer",
+        "name_ar": "جهاز تخطيط القلب اللاسلكي ومحلل كهارل الدم",
+        "category": "Diagnostics",
+        "category_ar": "التشخيص والمتابعة",
+        "quantity": 3,
+        "max_quantity": 3,
+        "unit": "kits",
+        "unit_ar": "جهاز",
+        "expiry_date": "2028-03-15",
+        "location_bay": "Bay B-1 (Diagnostics Drawer)",
+        "related_protocols": ["PROT-01", "PROT-02", "PROT-03", "PROT-09"],
+        "usage_notes_en": "Capture 10-sec high-res ECG strip; screen K+ / Mg2+ via finger-stick cartridge.",
+        "usage_notes_ar": "تسجيل شريط تخطيط قلب 10 ثوانٍ وفحص البوتاسيوم والمغنيسيوم عبر وخز الإصبع."
+    },
+    {
+        "code": "KIT-05",
+        "name_en": "Oral Rehydration Electrolyte Packs (ORS)",
+        "name_ar": "أملاح ومحاليل الإمهاء الفموية المتوازنة",
+        "category": "Fluids & Thermoregulation",
+        "category_ar": "السوائل والتنظيم الحراري",
+        "quantity": 18,
+        "max_quantity": 20,
+        "unit": "pouches",
+        "unit_ar": "كيس",
+        "expiry_date": "2027-09-01",
+        "location_bay": "Bay B-2 (Fluids Locker)",
+        "related_protocols": ["PROT-01", "PROT-04", "PROT-07"],
+        "usage_notes_en": "Mix in sealed drinking pouch. Essential for plasma volume drop and Space Fever cooling.",
+        "usage_notes_ar": "يُمزج في كيس شرب مغلق لتعويض نقص حجم البلازما وتبريد حمى الفضاء."
+    },
+    {
+        "code": "KIT-06",
+        "name_en": "Pressurized IV 0.9% Normal Saline Bag (500 mL)",
+        "name_ar": "محلول ملحي وريدي مضغوط 0.9% (500 مل)",
+        "category": "Fluids & Shock",
+        "category_ar": "محاليل الصدمة الوريدية",
+        "quantity": 6,
+        "max_quantity": 6,
+        "unit": "bags",
+        "unit_ar": "كيس",
+        "expiry_date": "2027-08-20",
+        "location_bay": "Bay B-2 (Pressure Infusion Sleeve)",
+        "related_protocols": ["PROT-04", "PROT-07", "PROT-10", "PROT-14"],
+        "usage_notes_en": "Requires pressure cuff sleeve in microgravity (no gravity drip). Purge all air bubbles carefully.",
+        "usage_notes_ar": "يحتاج كُم ضاغط في انعدام الجاذبية مع تفريغ فقاعات الهواء تماماً قبل التوصيل."
+    },
+    {
+        "code": "KIT-07",
+        "name_en": "Evaporative Cooling Gel Towels & Fan Kit",
+        "name_ar": "كمادات التبريد التبخيري ومروحة التبريد الشخصية",
+        "category": "Thermoregulation",
+        "category_ar": "التنظيم الحراري",
+        "quantity": 8,
+        "max_quantity": 10,
+        "unit": "packs",
+        "unit_ar": "عبوة",
+        "expiry_date": "2028-11-30",
+        "location_bay": "Bay C-1 (Exercise & Cooling Rack)",
+        "related_protocols": ["PROT-07"],
+        "usage_notes_en": "Apply to neck, axillae, and groin while striping liquid sweat film under active fan flow.",
+        "usage_notes_ar": "توضع على العنق والإبطين مع إزالة طبقة العرق العازلة وتشغيل مروحة التهوية."
+    },
+    {
+        "code": "KIT-08",
+        "name_en": "Portable Fan & CDRA CO2 Scrubber Cartridge",
+        "name_ar": "مروحة تهوية محمولة وخرطوشة تنقية CO2",
+        "category": "Environmental Control",
+        "category_ar": "التحكم البيئي",
+        "quantity": 5,
+        "max_quantity": 6,
+        "unit": "cartridges",
+        "unit_ar": "خرطوشة",
+        "expiry_date": "2029-05-01",
+        "location_bay": "Bay C-2 (ECLSS Spare Locker)",
+        "related_protocols": ["PROT-05", "PROT-08"],
+        "usage_notes_en": "Disperse stagnant exhaled CO2 domes around crew sleeping quarters and restore scrubbing.",
+        "usage_notes_ar": "تشتيت جيوب CO2 الراكدة حول كبائن النوم وتعزيز امتصاص الغاز السام."
+    },
+    {
+        "code": "KIT-09",
+        "name_en": "Bronchodilator Metered-Dose Inhaler (Spacer)",
+        "name_ar": "بخاخ موسع الشعب الهوائية مع أنبوب استنشاق مغلق",
+        "category": "Respiratory",
+        "category_ar": "الجهاز التنفسي",
+        "quantity": 4,
+        "max_quantity": 4,
+        "unit": "inhalers",
+        "unit_ar": "بخاخ",
+        "expiry_date": "2027-07-15",
+        "location_bay": "Bay A-1 (Respiratory Drawer)",
+        "related_protocols": ["PROT-06", "PROT-08"],
+        "usage_notes_en": "Use spacer chamber in zero-G for aerosolized bronchospasm or particulate airway irritation.",
+        "usage_notes_ar": "يُستخدم مع أنبوب استنشاق لضمان وصول الرذاذ للرئتين عند ضيق الشعب الهوائية."
+    },
+    {
+        "code": "KIT-10",
+        "name_en": "Personal Dosimeters & Storm Shielding Straps",
+        "name_ar": "مقاييس الجرعة الإشعاعية ومثبتات أكياس الدرع المائي",
+        "category": "Radiation Protection",
+        "category_ar": "الحماية الإشعاعية",
+        "quantity": 8,
+        "max_quantity": 8,
+        "unit": "sets",
+        "unit_ar": "طقم",
+        "expiry_date": "2030-06-01",
+        "location_bay": "Bay D-1 (Storm Shelter Aft)",
+        "related_protocols": ["PROT-11"],
+        "usage_notes_en": "Wear personal dosimeter inside Storm Shelter and line outer hull with water/polyethylene packs.",
+        "usage_notes_ar": "ارتداء مقياس الجرعة داخل المأوى المصفح ورص حاويات المياه على الجدران الخارجية."
+    },
+    {
+        "code": "KIT-11",
+        "name_en": "Hemostatic Gauze & Transparent Occlusive Dressing",
+        "name_ar": "شاش مرقئ لوقف النزيف وضمادات شفافة مانعة للتطاير",
+        "category": "Trauma & Wound Containment",
+        "category_ar": "الجروح والاحتواء الفضائي",
+        "quantity": 14,
+        "max_quantity": 16,
+        "unit": "packs",
+        "unit_ar": "عبوة",
+        "expiry_date": "2028-10-10",
+        "location_bay": "Bay D-2 (Trauma Module)",
+        "related_protocols": ["PROT-14"],
+        "usage_notes_en": "Strictly seal bleeding wounds immediately to prevent floating blood droplets in microgravity.",
+        "usage_notes_ar": "إحكام إغلاق الجروح فوراً لمنع تطاير قطرات الدم في هواء المركبة."
+    },
+    {
+        "code": "KIT-12",
+        "name_en": "Circadian Light Mask & Sleep Acoustic Kit",
+        "name_ar": "قناع الإضاءة اليوماوية وعازل الضوضاء للنوم",
+        "category": "Neurocognitive & Sleep",
+        "category_ar": "النوم واليقظة العصبية",
+        "quantity": 6,
+        "max_quantity": 6,
+        "unit": "kits",
+        "unit_ar": "طقم",
+        "expiry_date": "2029-12-31",
+        "location_bay": "Bay E-1 (Crew Quarters)",
+        "related_protocols": ["PROT-12", "PROT-13"],
+        "usage_notes_en": "Blocks blue light exposure during 16 orbital sunrises/day to protect melatonin & HRV recovery.",
+        "usage_notes_ar": "يحجب الضوء الأزرق الناتج عن 16 شروقاً يومياً لاستعادة النوم العميق ومؤشر HRV."
+    }
+]
+
+INCIDENT_SCENARIOS_LIBRARY = [
+    {
+        "id": "INC-01",
+        "protocol_code": "PROT-01",
+        "is_critical": True,
+        "title_en": "Acute Tachycardia / Chest Palpitations",
+        "title_ar": "تسارع حاد في نبضات القلب أو خفقان صدري",
+        "keywords": ["heart", "tachycardia", "palpitation", "fast pulse", "chest", "نبض", "خفقان", "تسارع", "قلبي", "صدر", "الم في الصدر", "دقات"],
+        "steps_en": [
+            "Halt all physical exertion immediately for {name} and secure in seated CMRS restraint.",
+            "Measure Heart Rate (live: {hr} bpm vs baseline {hr_mean} bpm) and SpO2 ({spo2}%).",
+            "Guide slow diaphragmatic breathing (4s inhale, 6s exhale) to reduce sympathetic surge.",
+            "Capture 10-second 12-lead ECG strip and check hydration / cabin CO2 ({co2} mmHg).",
+            "Re-assess every 2-5 minutes; escalate if chest pain, dizziness, or HR > 110 persists."
+        ],
+        "steps_ar": [
+            "إيقاف أي مجهود بدني فوراً لـ {name} وتثبيته في مقعد CMRS الطبي.",
+            "مراجعة معدل النبض الحالي ({hr} نبضة مقابل خط الأساس {hr_mean}) وتشبع الأكسجين ({spo2}%).",
+            "توجيه الرائد للتنفس البطني البطيء (4 ثوانٍ شهيق، 6 زفير) لتهدئة الجهاز العصبي.",
+            "تسجيل شريط ECG لمدة 10 ثوانٍ وفحص الجفاف ومستوى CO2 بالكابينة ({co2} ملم زئبق).",
+            "إعادة القياس كل 2-5 دقائق والتصعيد الفوري عند استمرار الألم أو الدوخة أو النبض > 110."
+        ],
+        "emergency_line_en": "Emergency procedure: If chest pain persists, syncope occurs, or HR > 130 with SpO2 < 90%, initiate Emergency O2 (4-6 L/min), ready AED, and transmit ECG to Ground Flight Surgeon.",
+        "emergency_line_ar": "إجراء الطوارئ: عند استمرار ألم الصدر أو الإغماء أو تجاوز النبض 130 مع هبوط الأكسجين دون 90%، ابدأ الأكسجين فوراً (4-6 لتر/د) وجهز جهاز AED وأرسل تخطيط القلب لطبيب الرحلة."
+    },
+    {
+        "id": "INC-02",
+        "protocol_code": "PROT-05",
+        "is_critical": True,
+        "title_en": "Hypoxia / Shortness of Breath / Air Hunger",
+        "title_ar": "نقص الأكسجين أو ضيق التنفس والاختناق",
+        "keywords": ["oxygen", "spo2", "hypoxia", "breath", "breathing", "suffocation", "dyspnea", "air", "اكسجين", "أكسجين", "تنفس", "نفس", "اختناق", "ضيق", "كتمة"],
+        "steps_en": [
+            "Check pulse oximeter probe placement on {name} and verify SpO2 (live: {spo2}%, RR: {rr}/min).",
+            "Relocate {name} into direct cabin ventilation stream to clear any stagnant CO2 pocket.",
+            "Instruct steady deep ventilations and verify ECLSS cabin pressure ({pressure} psi) & CO2 ({co2} mmHg).",
+            "Don emergency medical O2 mask if SpO2 remains < 94% for 60 seconds.",
+            "Monitor continuous SpO2 and heart rate response every 2 minutes."
+        ],
+        "steps_ar": [
+            "فحص تثبيت مجس الأكسجين لدى {name} والتحقق من نسبة SpO2 (الحالية: {spo2}%، التنفس: {rr}/د).",
+            "توجيه {name} أمام فتحة التهوية النشطة لتبديد أي جيب هواء راكد.",
+            "توجيهه للتنفس العميق المنتظم وفحص ضغط الكابينة ({pressure} psi) وتركيز CO2 ({co2} ملم زئبق).",
+            "ارتداء قناع الأكسجين الطبي للطوارئ إذا بقي SpO2 أقل من 94% لمدة 60 ثانية.",
+            "متابعة تشبع الأكسجين ونبضات القلب كل دقيقتين وتوثيق الاستجابة."
+        ],
+        "emergency_line_en": "Emergency procedure: If SpO2 drops below 90% or cyanosis/confusion appears, administer emergency 100% O2 via KIT-01 and declare Critical Respiratory Alert.",
+        "emergency_line_ar": "إجراء الطوارئ: إذا انخفض SpO2 دون 90% أو ظهر ازرقاق أو تشوش، شغّل الأكسجين 100% فوراً (KIT-01) وأعلن إنذاراً تنفسياً حرجاً."
+    },
+    {
+        "id": "INC-03",
+        "protocol_code": "PROT-07",
+        "is_critical": True,
+        "title_en": "Hyperthermia / Space Fever & Heat Stress",
+        "title_ar": "ارتفاع حرارة الجسم / حمى الفضاء والإجهاد الحراري",
+        "keywords": ["fever", "temp", "temperature", "hot", "heat", "sweat", "hyperthermia", "حرارة", "سخونية", "حمى", "عرق", "سخن", "حراره"],
+        "steps_en": [
+            "Terminate exercise immediately for {name} (current core temp: {temp}°C vs baseline {temp_mean}°C).",
+            "Strip insulating liquid sweat film with absorbent towels; sweat does not drip in zero-G.",
+            "Apply cool evaporative cooling packs (KIT-07) to neck, axillae, and groin under fan airflow.",
+            "Provide sips of chilled electrolyte ORS pouch (KIT-05) to restore plasma volume.",
+            "Re-check core temperature every 5 minutes until < 37.5°C."
+        ],
+        "steps_ar": [
+            "إيقاف التمرين فوراً لـ {name} (الحرارة الحالية: {temp}°م مقابل خط الأساس {temp_mean}°م).",
+            "مسح طبقة العرق السائلة العازلة بالمناشف الفائقة لأن العرق لا يتقاطر في انعدام الجاذبية.",
+            "وضع كمادات التبريد التبخيري (KIT-07) على العنق والإبطين مع توجيه مروحة تبريد مباشرة.",
+            "إعطاء رشفات من محلول الكهارل البارد (KIT-05) لتعويض السوائل.",
+            "إعادة قياس الحرارة كل 5 دقائق حتى تنخفض دون 37.5°م."
+        ],
+        "emergency_line_en": "Emergency procedure: If core temperature exceeds 38.5°C, fails to drop within 20 min, or delirium/vomiting occurs, initiate rapid cooling and contact Flight Surgeon immediately.",
+        "emergency_line_ar": "إجراء الطوارئ: إذا تجاوزت الحرارة 38.5°م أو لم تنخفض خلال 20 دقيقة أو ظهر هذيان/قيء، فعّل التبريد السريع وتواصل فوراً مع طبيب الرحلة."
+    },
+    {
+        "id": "INC-04",
+        "protocol_code": "PROT-08",
+        "is_critical": False,
+        "title_en": "Cabin CO2 Spike / Headache & Drowsiness",
+        "title_ar": "ارتفاع ثاني أكسيد الكربون / صداع ونعاس",
+        "keywords": ["co2", "headache", "dizzy", "drowsy", "carbon", "ventilation", "stagnant", "صداع", "دوخة", "خمول", "نعاس", "ثاني اكسيد", "تهوية", "مكتوم"],
+        "steps_en": [
+            "Inspect cabin CO2 sensor reading (live: {co2} mmHg; space threshold < 5.3 mmHg) and CDRA scrubber status.",
+            "Move {name} immediately to a high-airflow module and engage portable circulation fan (KIT-08).",
+            "Suspend heavy physical exercise for crew to cut metabolic CO2 production.",
+            "Hydrate with water/ORS (KIT-05) and assess headache or visual changes (SANS check).",
+            "Monitor SpO2 ({spo2}%) and Respiratory Rate ({rr}/min) until cabin CO2 returns < 4.0 mmHg."
+        ],
+        "steps_ar": [
+            "فحص مستشعر CO2 في الكابينة (الحالي: {co2} ملم زئبق؛ الحد الآمن < 5.3) وكفاءة منظومة CDRA.",
+            "نقل {name} فوراً إلى وحدة ذات تهوية نشطة وتشغيل مروحة التهوية وخرطوشة التنقية (KIT-08).",
+            "تعليق التمارين الشاقة مؤقتاً لتقليل إنتاج CO2 الأيضي.",
+            "تعويض السوائل (KIT-05) وفحص شدة الصداع أو تشوش الرؤية (استبعاد SANS).",
+            "متابعة الأكسجين ({spo2}%) والتنفس ({rr}/د) حتى ينخفض تركيز CO2 دون 4.0 ملم زئبق."
+        ],
+        "emergency_line_en": "Emergency procedure: If Cabin CO2 exceeds 7.5 mmHg or multiple crew show confusion/vomiting, declare Environmental Emergency and inspect ECLSS scrubbers.",
+        "emergency_line_ar": "إجراء الطوارئ: إذا تجاوز CO2 حاجز 7.5 ملم زئبق أو ظهرت أعراض جماعية على الطاقم، أعلن طوارئ بيئية وافحص فلاتر دعم الحياة فوراً."
+    },
+    {
+        "id": "INC-05",
+        "protocol_code": "PROT-11",
+        "is_critical": True,
+        "title_en": "Solar Particle Event (SPE) / Radiation Surge",
+        "title_ar": "عاصفة إشعاعية شمسية وارتفاع الجرعة الإشعاعية",
+        "keywords": ["radiation", "solar", "spe", "flare", "storm", "shelter", "dosimeter", "اشعاع", "إشعاع", "عاصفة", "شمسية", "مأوى"],
+        "steps_en": [
+            "Verify radiation dose rate (live: {rad} mSv/day; nominal ISS: 0.4-0.8 mSv/day) on personal dosimeter.",
+            "Issue immediate spacecraft radiation alert and evacuate {name} & crew to shielded Storm Shelter.",
+            "Line shelter hull perimeter with water/polyethylene food packs (KIT-10) for maximum shielding.",
+            "Power down non-essential electronics and cancel any scheduled EVA spacewalks immediately.",
+            "Log hourly cumulative radiation dose (current mission total: {cum_rad} mSv) until All-Clear."
+        ],
+        "steps_ar": [
+            "التحقق من معدل الجرعة الإشعاعية (الحالي: {rad} ملي سيفرت/يوم؛ الطبيعي 0.4-0.8) على مقياس الجرعة.",
+            "إعلان إنذار العاصفة الشمسية وإخلاء {name} والطاقم فوراً إلى المأوى المصفح.",
+            "رصف حاويات المياه والمؤن على جدران المأوى (KIT-10) لتدعيم الحماية البيولوجية.",
+            "إيقاف أي خروج فضائي EVA وإغلاق الأجهزة غير الضرورية.",
+            "توثيق الجرعة التراكمية كل ساعة (الإجمالي الحالي بالمهمة: {cum_rad} ملي سيفرت) حتى زوال الخطر."
+        ],
+        "emergency_line_en": "Emergency procedure: If dose rate exceeds 2.5 mSv/day, enforce mandatory Storm Shelter lockdown until Space Weather Control confirms All-Clear.",
+        "emergency_line_ar": "إجراء الطوارئ: إذا تخطى معدل الإشعاع 2.5 ملي سيفرت/يوم، يُفرض حظر المأوى المصفح بالكامل لحين صدور إشارة الأمان الرسمية."
+    },
+    {
+        "id": "INC-06",
+        "protocol_code": "PROT-10",
+        "is_critical": True,
+        "title_en": "Cardiac Arrest / Unresponsive Astronaut / Fainting",
+        "title_ar": "توقف القلب / فقدان الوعي / انهيار حاد",
+        "keywords": ["arrest", "faint", "unconscious", "collapse", "cpr", "aed", "flatline", "pulse zero", "اغمى", "إغماء", "فقد وعي", "توقف", "إنعاش", "انعاش", "صدمة"],
+        "steps_en": [
+            "Confirm responsiveness of {name} and sound All-Crew Emergency Alarm immediately.",
+            "Restrain {name} onto CMRS medical board (KIT-03) and lock rescuer foot restraints.",
+            "Start zero-G chest compressions (Evetts-Russomano / Handstand CPR) at 100-120 compressions/min.",
+            "Attach Portable AED pads (KIT-02), clear crew, and deliver shock if advised.",
+            "Establish airway and ventilate with 100% Emergency O2 (KIT-01); notify Flight Surgeon."
+        ],
+        "steps_ar": [
+            "فحص وعي واستجابة {name} وإطلاق إنذار الطوارئ القصوى لكامل الطاقم فوراً.",
+            "تثبيت {name} بإحكام على لوح CMRS (KIT-03) وتثبيت قدمي المسعف.",
+            "بدء الضغط الصدري في انعدام الوزن بتقنية Evetts-Russomano بمعدل 100-120 ضغطة/دقيقة.",
+            "توصيل أقطاب جهاز AED (KIT-02) وإبعاد الطاقم لتفريغ الصدمة إذا أوصى الجهاز.",
+            "تأمين مجرى الهواء والتهوية بأكسجين 100% (KIT-01) والتصعيد العاجل لطبيب الرحلة."
+        ],
+        "emergency_line_en": "Emergency procedure: ALL-CREW LIFE SUPPORT EMERGENCY — Execute CMRS restraint + continuous CPR + AED immediately without delay.",
+        "emergency_line_ar": "إجراء الطوارئ: حالة إنقاذ حياة قصوى — التثبيت على لوح CMRS والإنعاش القلبي وجهاز AED فوراً دون أي تأخير."
+    },
+    {
+        "id": "INC-07",
+        "protocol_code": "PROT-12",
+        "is_critical": False,
+        "title_en": "Sleep Deprivation / Fatigue & Low HRV",
+        "title_ar": "قلة النوم / الإرهاق الذهني وهبوط HRV",
+        "keywords": ["sleep", "tired", "fatigue", "insomnia", "hrv", "stress", "exhausted", "نوم", "أرق", "ارهاق", "إرهاق", "تعب", "توتر", "ضغط نفسي"],
+        "steps_en": [
+            "Review {name}'s sleep log (live: {sleep}h; target >= 6.5h) and HRV RMSSD ({hrv} ms).",
+            "Suspend safety-critical EVA, robotics, or docking duties for {name} until rested.",
+            "Deploy Circadian Light Mask & acoustic sleep isolation kit (KIT-12) in crew quarters.",
+            "Enforce mandatory 8.5-hour sleep block with blue-depleted cabin lighting.",
+            "Monitor HRV recovery and resting HR ({hr} bpm) over the next 24 hours."
+        ],
+        "steps_ar": [
+            "مراجعة ساعات نوم {name} (الحالية: {sleep} ساعة؛ المستهدف >= 6.5) ومؤشر HRV ({hrv} مللي ثانية).",
+            "تعليق مهام EVA الحرجة والعمليات الدقيقة لـ {name} لتفادي الأخطاء الإدراكية.",
+            "استخدام قناع الإضاءة اليوماوية وعازل الضوضاء (KIT-12) داخل كابينة النوم.",
+            "تخصيص فترة راحة ونوم إلزامية 8.5 ساعات مع تقليل الإضاءة الزرقاء.",
+            "متابعة تحسن HRV ونبض الراحة ({hr} نبضة/د) خلال الـ 24 ساعة القادمة."
+        ],
+        "emergency_line_en": "Emergency procedure: Escalate to CMO & Flight Surgeon if persistent confusion, severe behavioral distress, or HRV < 15 ms occurs.",
+        "emergency_line_ar": "إجراء الطوارئ: التصعيد لمسؤول الطاقم الطبي وطبيب الرحلة إذا ظهر تشوش إدراكي حاد أو هبوط HRV دون 15 مللي ثانية."
+    },
+    {
+        "id": "INC-08",
+        "protocol_code": "PROT-14",
+        "is_critical": True,
+        "title_en": "Trauma / Bleeding Wound / Cabin Depressurization",
+        "title_ar": "إصابة جسدية / نزيف / تسريب ضغط الكابينة أو بدلة EVA",
+        "keywords": ["wound", "bleed", "blood", "burn", "cut", "trauma", "injury", "eva", "pressure", "leak", "جرح", "نزيف", "دم", "حرق", "اصابة", "إصابة", "كسر", "ضغط", "تسريب", "بدلة"],
+        "steps_en": [
+            "If EVA or cabin pressure ({pressure} psi < 13.5 psi): abort EVA immediately and verify module seals.",
+            "For bleeding in zero-G: apply direct pressure with hemostatic gauze & transparent occlusive seal (KIT-11) to prevent floating droplets.",
+            "Restrain {name} in CMRS harness (KIT-03) and monitor BP ({sys}/{dia} mmHg) and HR ({hr} bpm).",
+            "If hypovolemic/hypotensive signs appear, prepare pressurized 0.9% IV Saline sleeve (KIT-06).",
+            "Document wound location and escalate to CMO and Ground Flight Surgeon."
+        ],
+        "steps_ar": [
+            "في حال طوارئ بدلة EVA أو هبوط ضغط الكابينة ({pressure} psi): إنهاء المهمة الخارجية فوراً وفحص العزل.",
+            "للنزيف في انعدام الجاذبية: ضغط مباشر بشاش مرقئ وضمادة شفافة محكمة (KIT-11) لمنع تطاير قطرات الدم.",
+            "تثبيت {name} بأحزمة CMRS (KIT-03) ومراقبة الضغط ({sys}/{dia}) والنبض ({hr} نبضة/د).",
+            "عند هبوط الضغط تجهيز المحلول الملحي الوريدي المضغوط (KIT-06) لتعويض السوائل.",
+            "توثيق الإصابة والتصعيد الفوري لـ CMO وطبيب الرحلة الأرضي."
+        ],
+        "emergency_line_en": "Emergency procedure: Arterial bleed, suit depressurization, or Systolic BP < 85 mmHg requires immediate EVA abort, airlock repressurization, and Emergency Flight Surgeon consult.",
+        "emergency_line_ar": "إجراء الطوارئ: النزيف الشرياني أو هبوط ضغط البدلة أو انخفاض الضغط دون 85 يتطلب إلغاء EVA فوراً وإعادة الضغط والاستشارة العاجلة لطبيب الرحلة."
+    },
+    {
+        "id": "INC-09",
+        "protocol_code": "PROT-04",
+        "is_critical": True,
+        "title_en": "Hypotension / Dizziness / Dehydration",
+        "title_ar": "هبوط ضغط الدم / دوخة / جفاف الفضاء",
+        "keywords": ["low pressure", "hypotension", "dehydration", "thirst", "nausea", "stomach", "هبوط", "ضغط منخفض", "جفاف", "غثيان", "بطن", "مغص", "دوخه"],
+        "steps_en": [
+            "Secure {name} horizontally with medical harness (KIT-03); prevent abrupt positional shifts.",
+            "Verify Blood Pressure (live: {sys}/{dia} mmHg) and Heart Rate ({hr} bpm).",
+            "Administer 500-1000 mL Electrolyte ORS pouch (KIT-05) slowly.",
+            "Evaluate for concealed bleeding, infection, or space adaptation nausea.",
+            "Re-measure BP every 5 minutes and prepare IV pressure bag (KIT-06) if Systolic < 85 mmHg."
+        ],
+        "steps_ar": [
+            "تثبيت {name} في وضع أفقي بأحزمة التثبيت (KIT-03) وتجنب تغييرات الوضعية المفاجئة.",
+            "قياس ضغط الدم (الحالي: {sys}/{dia} ملم زئبق) والنبض ({hr} نبضة/د).",
+            "إعطاء 500-1000 مل من محلول الإمهاء المتوازن (KIT-05) تدريجياً.",
+            "فحص علامات الجفاف أو الغثيان الفضائي واستبعاد أي نزيف.",
+            "إعادة قياس الضغط كل 5 دقائق وتجهيز المحلول الوريدي المضغوط (KIT-06) إذا هبط الانقباضي دون 85."
+        ],
+        "emergency_line_en": "Emergency procedure: If Systolic BP drops < 75 mmHg or syncope/cold extremities occur, initiate pressurized IV 0.9% Saline (KIT-06) and alert Flight Surgeon.",
+        "emergency_line_ar": "إجراء الطوارئ: إذا انخفض الضغط الانقباضي دون 75 أو حدث إغماء، ابدأ المحلول الوريدي المضغوط (KIT-06) وأخطر طبيب الرحلة فوراً."
     }
 ]

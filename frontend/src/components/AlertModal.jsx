@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  X, AlertTriangle, ShieldAlert, CheckCircle2, Circle, 
-  Send, Radio, Clock, User, HeartHandshake, FileText, 
-  Activity, ArrowRight, ExternalLink
+import {
+  X, ShieldAlert, CheckCircle2, Circle,
+  Send, Radio, Activity, BriefcaseMedical
 } from 'lucide-react';
 import { useAstro } from '../context/AstroContext';
 
 export const AlertModal = () => {
-  const { 
-    lang, t, isAlertModalOpen, closeAlertModal, selectedAlert, 
-    updateChecklistStep, contactFlightSurgeon, isTransmitting, 
-    commCountdown, location, bootstrap 
+  const {
+    lang, isAlertModalOpen, closeAlertModal, selectedAlert,
+    updateChecklistStep, contactFlightSurgeon, isTransmitting,
+    commCountdown, location, bootstrap, medicalKit, dispenseKitItem
   } = useAstro();
 
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -202,6 +201,43 @@ export const AlertModal = () => {
               )}
             </button>
           </div>
+
+          {/* Required Smart Medical Kit Items for this Protocol */}
+          {(() => {
+            const reqKit = (medicalKit || []).filter(
+              item => (item.related_protocols || []).includes(selectedAlert.protocol_code)
+            );
+            if (reqKit.length === 0) return null;
+            return (
+              <div className="bg-emerald-950/20 border border-emerald-500/40 rounded-xl p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-1.5">
+                    <BriefcaseMedical className="w-4 h-4" />
+                    {lang === 'ar'
+                      ? `أدوات صندوق الإسعافات المطلوبة لبروتوكول ${selectedAlert.protocol_code}:`
+                      : `Required Smart Medical Kit Supplies (${selectedAlert.protocol_code}):`}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {reqKit.map(item => (
+                    <div key={item.id} className="p-2.5 rounded-lg bg-space-900 border border-slate-800 flex items-center justify-between gap-2 text-xs">
+                      <div className="min-w-0">
+                        <div className="font-bold text-white truncate">{item.code} — {lang === 'ar' ? item.name_ar : item.name_en}</div>
+                        <div className="text-[10px] font-mono text-slate-400">{item.location_bay} • Stock: {item.quantity}/{item.max_quantity}</div>
+                      </div>
+                      <button
+                        onClick={() => dispenseKitItem(item.id, false)}
+                        disabled={item.quantity <= 0}
+                        className="px-2.5 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 font-mono text-[10px] font-bold shrink-0 cursor-pointer disabled:opacity-40"
+                      >
+                        {lang === 'ar' ? 'صرف 1' : 'Dispense'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Interactive 8-Step Emergency Checklist */}
           <div className="space-y-3">

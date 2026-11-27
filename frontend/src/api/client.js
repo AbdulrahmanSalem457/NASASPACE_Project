@@ -1,9 +1,11 @@
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || 'https://astrovitalsai.pythonanywhere.com').replace(/\/+$/, '');
+const isLocalDev = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || (isLocalDev ? '' : 'https://astrovitalsai.pythonanywhere.com')).replace(/\/+$/, '');
 const API_BASE = `${BACKEND_URL}/api`;
 
 export const apiClient = {
-  async getBootstrap() {
-    const res = await fetch(`${API_BASE}/bootstrap/`);
+  async getBootstrap(fresh = true) {
+    const url = fresh ? `${API_BASE}/bootstrap/?fresh=1` : `${API_BASE}/bootstrap/`;
+    const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     return await res.json();
   },

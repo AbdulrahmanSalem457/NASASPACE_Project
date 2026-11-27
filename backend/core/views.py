@@ -93,6 +93,20 @@ class BootstrapView(APIView):
             call_command('seed_astrovitals')
             astronauts = Astronaut.objects.all()
 
+        # Always reset to nominal baseline levels when initial dashboard loads (?fresh=1)
+        if request.query_params.get('fresh') in ('1', 'true', 'True'):
+            MedicalAlert.objects.filter(is_active=True).update(is_active=False)
+            Astronaut.objects.all().update(
+                cabin_co2=3.2,
+                cabin_pressure=14.7,
+                daily_radiation=0.55,
+                ecg_qtc=415,
+                ecg_rhythm='Normal Sinus',
+                hrv_rmssd=52.0,
+                sleep_duration=6.8,
+            )
+            astronauts = Astronaut.objects.all()
+
         ast_data = AstronautSerializer(astronauts, many=True).data
         active_alerts = MedicalAlert.objects.filter(is_active=True).order_by('-timestamp')
         alerts_data = MedicalAlertSerializer(active_alerts, many=True).data

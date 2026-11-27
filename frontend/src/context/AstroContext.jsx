@@ -149,9 +149,9 @@ export const AstroProvider = ({ children }) => {
   const [lang, setLang] = useState(() => localStorage.getItem('astrovitals_lang') || 'ar');
   const [bootstrap, setBootstrap] = useState(null);
   const [astronauts, setAstronauts] = useState([]);
-  const [selectedAstronautId, setSelectedAstronautId] = useState('AST-02');
+  const [selectedAstronautId, setSelectedAstronautId] = useState('AST-01');
   const [location, setLocation] = useState('ISS');
-  const [activity, setActivity] = useState('light');
+  const [activity, setActivity] = useState('rest');
   const [alerts, setAlerts] = useState([]);
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
@@ -233,18 +233,24 @@ export const AstroProvider = ({ children }) => {
   const loadBootstrap = useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await apiClient.getBootstrap();
+      const data = await apiClient.getBootstrap(true);
       setBootstrap(data);
       const crew = data.astronauts || [];
       setAstronauts(crew);
       setMedicalKit(data.medical_kit || []);
       setEvaPlans(data.eva_plans || []);
       setRadiationBudgets(data.radiation_budgets || {});
-      const initialAlerts = data.active_alerts || [];
-      setAlerts(initialAlerts);
+      // Always start clean at nominal levels with 0 active alerts
+      setAlerts([]);
+      setSelectedAlert(null);
+      setEvaluation(null);
+      setActiveScenario('0');
 
-      const defaultAst = crew.find(a => a.id === 'AST-02') || crew[0];
-      if (defaultAst && (!initialAlerts || initialAlerts.length === 0)) {
+      const defaultAst = crew.find(a => a.id === 'AST-01') || crew[0];
+      if (defaultAst) {
+        setSelectedAstronautId(defaultAst.id);
+        setActivity(defaultAst.current_activity || 'rest');
+        setLocation(defaultAst.mission_location || 'ISS');
         setCurrentVitals({
           heart_rate: defaultAst.hr_mean,
           systolic_bp: defaultAst.sys_bp_mean,
@@ -252,14 +258,14 @@ export const AstroProvider = ({ children }) => {
           spo2: defaultAst.spo2_mean,
           respiratory_rate: defaultAst.resp_rate_mean,
           body_temperature: defaultAst.body_temp_mean,
-          cabin_co2: defaultAst.cabin_co2 || 3.2,
-          hrv_rmssd: defaultAst.hrv_rmssd || 52.0,
-          daily_radiation: defaultAst.daily_radiation || 0.55,
-          sleep_duration: defaultAst.sleep_duration || 6.8,
+          cabin_co2: 3.2,
+          hrv_rmssd: 52.0,
+          daily_radiation: 0.55,
+          sleep_duration: 6.8,
           exercise_hours: defaultAst.exercise_hours || 2.5,
-          ecg_qtc: defaultAst.ecg_qtc || 415,
-          cabin_pressure: defaultAst.cabin_pressure || 14.7,
-          ecg_rhythm: defaultAst.ecg_rhythm || 'Normal Sinus',
+          ecg_qtc: 415,
+          cabin_pressure: 14.7,
+          ecg_rhythm: 'Normal Sinus',
           status: 'normal'
         });
       }

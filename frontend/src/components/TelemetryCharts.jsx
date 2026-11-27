@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  ResponsiveContainer, LineChart, Line, XAxis, YAxis, 
-  Tooltip, ReferenceLine, ReferenceArea, CartesianGrid, Legend 
+import {
+  ResponsiveContainer, LineChart, Line, XAxis, YAxis,
+  Tooltip, ReferenceLine, ReferenceArea, CartesianGrid, Legend
 } from 'recharts';
-import { 
-  Calendar, Clock, Activity, Heart, Gauge, Wind, 
-  Thermometer, Zap, RefreshCw, AlertCircle, CheckCircle2, AlertTriangle, ShieldAlert
+import {
+  Calendar, Clock, Activity, Heart, Gauge, Wind,
+  Thermometer, Zap, RefreshCw, CheckCircle2, AlertTriangle, ShieldAlert,
+  HeartPulse, Play, Pause
 } from 'lucide-react';
 import { useAstro } from '../context/AstroContext';
 import { apiClient } from '../api/client';
+import { LiveECGWaveform } from './LiveECGWaveform';
 
 export const TelemetryCharts = () => {
-  const { lang, t, selectedAstronaut, selectedAstronautId, activity, currentVitals, activeScenario } = useAstro();
-  const [range, setRange] = useState('24h'); // '24h' or '30d'
-  const [metric, setMetric] = useState('heart_rate'); // 'heart_rate', 'blood_pressure', 'spo2', 'respiratory_rate', 'body_temperature', 'secondary'
+  const {
+    lang, selectedAstronaut, selectedAstronautId,
+    currentVitals, activeScenario, globalStatus
+  } = useAstro();
+  const [range, setRange] = useState('24h');
+  const [metric, setMetric] = useState('heart_rate');
   const [chartData, setChartData] = useState([]);
+  const [liveBuffer, setLiveBuffer] = useState([]);
+  const [isLiveStream, setIsLiveStream] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -26,7 +33,6 @@ export const TelemetryCharts = () => {
         const res = await apiClient.getAstronautVitals(selectedAstronautId, range, range === '24h' ? 288 : 30);
         if (isMounted) {
           if (range === '24h') {
-            // Format 24h data
             const formatted = (res.data || []).map((d) => ({
               time: d.timestamp ? d.timestamp.substring(11, 16) : '',
               fullTime: d.timestamp,
@@ -43,8 +49,8 @@ export const TelemetryCharts = () => {
               radiation_rate: d.radiation_rate || 0.55
             }));
             setChartData(formatted);
+            setLiveBuffer([]);
           } else {
-            // Format 30d rollup data
             const formatted = (res.data || []).map((d) => ({
               time: d.date ? d.date.substring(5) : '',
               fullTime: d.date,
@@ -74,6 +80,39 @@ export const TelemetryCharts = () => {
     fetchTelemetry();
     return () => { isMounted = false; };
   }, [selectedAstronautId, range, activeScenario]);
+
+  // Dynamic Real-Time Stream Ticker (animates chart line continuously with current state + natural micro-jitter)
+  useEffect(() => {
+    if (!isLiveStream || range !== '24h' || !selectedAstronaut) return;
+
+    const tick = () => {
+      const now = new Date();
+      const timeStr = now.toTimeString().slice(0, 8);
+      const v = currentVitals || {};
+      const baseHr = Number(v.heart_rate ?? selectedAstronaut.hr_mean ?? 62);
+      const isArrest = baseHr < 25;
+
+      const jitter = (amt) => Number(((Math.random() - 0.5) * 2 * amt).toFixed(2));
+      const pt = {
+        time: timeStr,
+        fullTime: `Live ${timeStr}`,
+        heart_rate: isArrest ? 0 : Math.max(30, Number((baseHr + jitter(1.5)).toFixed(1))),
+        systolic_bp: isArrest ? 0 : Number((Number(v.systolic_bp ?? selectedAstronaut.sys_bp_mean) + jitter(1.5)).toFixed(1)),
+        diastolic_bp: isArrest ? 0 : Number((Number(v.diastolic_bp ?? selectedAstronaut.dia_bp_mean) + jitter(1.0)).toFixed(1)),
+        spo2: Math.min(100, Math.max(55, Number((Number(v.spo2 ?? selectedAstronaut.spo2_mean) + jitter(0.2)).toFixed(1)))),
+        respiratory_rate: isArrest ? 0 : Math.max(4, Number((Number(v.respiratory_rate ?? selectedAstronaut.resp_rate_mean) + jitter(0.5)).toFixed(1))),
+        body_temperature: Number((Number(v.body_temperature ?? selectedAstronaut.body_temp_mean) + jitter(0.03)).toFixed(2)),
+        cabin_co2: Number((Number(v.cabin_co2 ?? 3.2) + jitter(0.05)).toFixed(2)),
+        hrv_rmssd: isArrest ? 0 : Math.max(5, Number((Number(v.hrv_rmssd ?? 52) + jitter(1.2)).toFixed(1))),
+        isLivePoint: true,
+      };
+      setLiveBuffer(prev => [...prev.slice(-24), pt]);
+    };
+
+    tick();
+    const timer = setInterval(tick, 1200);
+    return () => clearInterval(timer);
+  }, [isLiveStream, range, selectedAstronaut, currentVitals]);
 
   if (!selectedAstronaut) return null;
 
@@ -205,14 +244,20 @@ export const TelemetryCharts = () => {
 
   const isNominalLive = !isCriticalLive && !isWarningLive;
 
-  // Append live reading to chart data so the curve visibly connects to NOW
+  // Merge recent 24h points + live rolling stream buffer
   const displayChartData = useMemo(() => {
-    if (!chartData || chartData.length === 0) return [];
+    if (!chartData || chartData.length === 0) return liveBuffer;
     if (range !== '24h') return chartData;
+
+    const recentCount = Math.max(12, 40 - liveBuffer.length);
+    const recent = chartData.slice(-recentCount);
+    if (liveBuffer.length > 0) {
+      return [...recent, ...liveBuffer];
+    }
 
     const livePoint = {
       time: lang === 'ar' ? 'الآن' : 'NOW',
-      fullTime: 'Live Active Scenario',
+      fullTime: 'Live Active Telemetry',
       heart_rate: currentVitals?.heart_rate ?? baselines.heart_rate?.mean,
       systolic_bp: currentVitals?.systolic_bp ?? baselines.systolic_bp?.mean,
       diastolic_bp: currentVitals?.diastolic_bp ?? baselines.diastolic_bp?.mean,
@@ -223,11 +268,8 @@ export const TelemetryCharts = () => {
       hrv_rmssd: currentVitals?.hrv_rmssd ?? 50.0,
       isLivePoint: true
     };
-
-    // Return the slice plus the dynamic live point
-    const recent = chartData.slice(-40);
     return [...recent, livePoint];
-  }, [chartData, currentVitals, range, lang, baselines]);
+  }, [chartData, liveBuffer, currentVitals, range, lang, baselines]);
 
   return (
     <div className="bg-space-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-4">
@@ -321,31 +363,67 @@ export const TelemetryCharts = () => {
           })}
         </div>
 
-        {/* Range Toggle (24h vs 30d) */}
-        <div className="flex items-center bg-space-850 p-1 rounded-xl border border-slate-800 text-xs font-mono">
-          <button
-            onClick={() => setRange('24h')}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-              range === '24h'
-                ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Clock className="w-3.5 h-3.5" />
-            <span>24h CSV + Live</span>
-          </button>
-          <button
-            onClick={() => setRange('30d')}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-              range === '30d'
-                ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Calendar className="w-3.5 h-3.5" />
-            <span>30-Day Trend</span>
-          </button>
+        {/* Range Toggle (24h vs 30d) + Live Stream Toggle */}
+        <div className="flex flex-wrap items-center gap-2">
+          {range === '24h' && (
+            <button
+              onClick={() => setIsLiveStream(!isLiveStream)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all cursor-pointer ${
+                isLiveStream
+                  ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
+                  : 'bg-space-850 border-slate-700 text-slate-400'
+              }`}
+            >
+              {isLiveStream ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              <span>{lang === 'ar' ? (isLiveStream ? 'بث حي: شغال' : 'بث حي: متوقف') : (isLiveStream ? 'Live Stream ON' : 'Live Paused')}</span>
+            </button>
+          )}
+
+          <div className="flex items-center bg-space-850 p-1 rounded-xl border border-slate-800 text-xs font-mono">
+            <button
+              onClick={() => setRange('24h')}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                range === '24h'
+                  ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Clock className="w-3.5 h-3.5" />
+              <span>24h CSV + Live</span>
+            </button>
+            <button
+              onClick={() => setRange('30d')}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                range === '30d'
+                  ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Calendar className="w-3.5 h-3.5" />
+              <span>30-Day Trend</span>
+            </button>
+          </div>
         </div>
+      </div>
+
+      {/* Live Animated ECG Monitor Strip directly visible in Charts */}
+      <div className="bg-slate-950/90 border border-slate-800 rounded-xl p-3 space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+          <span className="flex items-center gap-2 font-bold text-slate-200">
+            <HeartPulse className="w-4 h-4 text-rose-400 animate-pulse" />
+            {lang === 'ar' ? 'مراقب تخطيط القلب الحي المتحرك (Dynamic P-QRS-T Monitor)' : 'Dynamic Live P-QRS-T ECG Monitor'}
+          </span>
+          <span className="text-[11px] text-cyan-300 font-bold">
+            {currentVitals?.ecg_rhythm || 'Normal Sinus'} • {currentVitals?.heart_rate ?? selectedAstronaut.hr_mean} BPM • QTc: {currentVitals?.ecg_qtc ?? 415} ms
+          </span>
+        </div>
+        <LiveECGWaveform
+          heartRate={Number(currentVitals?.heart_rate ?? selectedAstronaut.hr_mean ?? 68)}
+          ecgQtc={Number(currentVitals?.ecg_qtc ?? selectedAstronaut.ecg_qtc ?? 415)}
+          rhythm={currentVitals?.ecg_rhythm || 'Normal Sinus'}
+          isEmergency={globalStatus === 'emergency' || Number(currentVitals?.heart_rate ?? 68) < 25}
+          height={76}
+        />
       </div>
 
       {/* 3. Chart Legend & Baseline Band Info */}

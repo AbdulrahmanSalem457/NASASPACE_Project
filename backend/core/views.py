@@ -958,7 +958,7 @@ class MissionReadinessView(APIView):
     )
     def get(self, request):
         ast_id = request.query_params.get('astronaut_id')
-        qs = Astronaut.objects.filter(id=ast_id) if ast_id else Astronaut.objects.all()
+        qs = Astronaut.objects.all().order_by('id')
 
         crew_readiness = []
         highest_risk = 0

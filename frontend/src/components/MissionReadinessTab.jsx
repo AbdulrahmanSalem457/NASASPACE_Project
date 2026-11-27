@@ -29,7 +29,7 @@ export const MissionReadinessTab = () => {
   const loadReadiness = async () => {
     setLoadingCrew(true);
     try {
-      const res = await apiClient.getReadiness(selectedAstronautId);
+      const res = await apiClient.getReadiness();
       setCrewData(res);
     } catch (e) {
       console.warn('Could not load crew readiness:', e);

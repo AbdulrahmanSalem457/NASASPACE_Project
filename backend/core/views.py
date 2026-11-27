@@ -96,6 +96,7 @@ class BootstrapView(APIView):
         # Always reset to nominal baseline levels when initial dashboard loads (?fresh=1)
         if request.query_params.get('fresh') in ('1', 'true', 'True'):
             MedicalAlert.objects.filter(is_active=True).update(is_active=False)
+            VitalReading.objects.exclude(source='csv_24h').delete()
             Astronaut.objects.all().update(
                 cabin_co2=3.2,
                 cabin_pressure=14.7,
@@ -105,7 +106,20 @@ class BootstrapView(APIView):
                 hrv_rmssd=52.0,
                 sleep_duration=6.8,
             )
-            astronauts = Astronaut.objects.all()
+            now_ts = timezone.now()
+            nominal_rows = [
+                VitalReading(
+                    astronaut=a, timestamp=now_ts, activity=a.current_activity or 'rest',
+                    heart_rate=a.hr_mean, systolic_bp=a.sys_bp_mean, diastolic_bp=a.dia_bp_mean,
+                    spo2=a.spo2_mean, respiratory_rate=a.resp_rate_mean, body_temperature=a.body_temp_mean,
+                    status='normal', cabin_co2=3.2, cabin_pressure=14.7, ecg_qtc=415,
+                    ecg_rhythm='Normal Sinus', hrv_rmssd=52.0, sleep_duration=6.8,
+                    radiation_rate=0.55, source='live_nominal'
+                )
+                for a in Astronaut.objects.all()
+            ]
+            VitalReading.objects.bulk_create(nominal_rows)
+            astronauts = Astronaut.objects.all().order_by('id')
 
         ast_data = AstronautSerializer(astronauts, many=True).data
         active_alerts = MedicalAlert.objects.filter(is_active=True).order_by('-timestamp')

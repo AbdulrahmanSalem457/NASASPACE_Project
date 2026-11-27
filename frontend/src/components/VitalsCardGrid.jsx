@@ -264,7 +264,7 @@ export const VitalsCardGrid = () => {
           return (
             <div
               key={c.key}
-              className={`rounded-2xl border p-5 transition-all flex flex-col justify-between ${cardStyle}`}
+              className={`rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl flex flex-col justify-between ${cardStyle}`}
             >
               {/* Top Row: Metric Name & Level Badge */}
               <div className="flex items-start justify-between gap-2">

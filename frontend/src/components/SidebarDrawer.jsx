@@ -113,12 +113,12 @@ export const SidebarDrawer = ({ isOpen, onClose }) => {
       {/* Light semi-transparent Backdrop so the dashboard behind is clearly visible */}
       <div 
         onClick={onClose}
-        className="fixed inset-0 bg-slate-950/50 backdrop-blur-[2px] transition-opacity cursor-pointer"
+        className="fixed inset-0 bg-slate-950/50 backdrop-blur-[2px] animate-backdrop-fade cursor-pointer"
         title={lang === 'ar' ? 'انقر هنا لإغلاق القائمة' : 'Click to close'}
       />
 
       <div className={`fixed inset-y-0 ${lang === 'ar' ? 'right-0' : 'left-0'} max-w-full flex`}>
-        <div className="w-screen max-w-md bg-slate-900 border-x border-slate-800 shadow-2xl flex flex-col h-full z-10">
+        <div className={`w-screen max-w-md bg-slate-900 border-x border-slate-800 shadow-2xl flex flex-col h-full z-10 ${lang === 'ar' ? 'animate-drawer-right' : 'animate-drawer-left'}`}>
           
           {/* Drawer Header */}
           <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/90">

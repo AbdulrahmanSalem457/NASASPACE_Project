@@ -50,9 +50,9 @@ export const AlertModal = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-backdrop-fade">
       <div 
-        className={`w-full max-w-4xl my-auto rounded-2xl border shadow-2xl overflow-hidden transition-all duration-300 ${
+        className={`w-full max-w-4xl my-auto rounded-2xl border shadow-2xl overflow-hidden transition-all duration-300 animate-modal-pop ${
           isEmergency 
             ? 'bg-space-950 border-red-500 shadow-red-600/30 ring-2 ring-red-500 animate-pulse-fast' 
             : isCritical 

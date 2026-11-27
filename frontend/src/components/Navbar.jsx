@@ -162,10 +162,10 @@ export const Navbar = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-mono font-semibold transition-all shrink-0 cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-mono font-semibold transition-all duration-200 active:scale-95 shrink-0 cursor-pointer ${
                   isSel
-                    ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20'
-                    : 'bg-slate-950/70 border border-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700'
+                    ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20 scale-[1.02]'
+                    : 'bg-slate-950/70 border border-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700 hover:-translate-y-0.5'
                 }`}
               >
                 <Icon className="w-4 h-4" />

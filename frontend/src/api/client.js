@@ -1,5 +1,9 @@
 const isLocalDev = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname);
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || (isLocalDev ? '' : 'https://astrovitalsai.pythonanywhere.com')).replace(/\/+$/, '');
+const rawEnvBackend = (import.meta.env.VITE_BACKEND_URL || '').replace(/\/+$/, '');
+const isDockerInternalHost = /^https?:\/\/backend(?::\d+)?$/i.test(rawEnvBackend);
+const BACKEND_URL = isDockerInternalHost
+  ? ''
+  : (rawEnvBackend || (isLocalDev ? '' : 'https://astrovitalsai.pythonanywhere.com'));
 const API_BASE = `${BACKEND_URL}/api`;
 
 export const apiClient = {
